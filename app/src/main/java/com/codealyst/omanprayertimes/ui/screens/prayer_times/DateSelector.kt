@@ -1,0 +1,182 @@
+package com.codealyst.omanprayertimes.ui.screens.prayer_times
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateSelector(
+    modifier: Modifier = Modifier,
+    onDateSelected: (LocalDate) -> Unit = {},
+) {
+    val omanZone = remember { ZoneId.of("Asia/Muscat") }
+    val today = remember { LocalDate.now(omanZone) }
+    val tomorrow = remember(today) { today.plusDays(1) }
+    var selectedDateText by rememberSaveable { mutableStateOf(today.toString()) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+
+    val selectedDate = remember(selectedDateText) { LocalDate.parse(selectedDateText) }
+    val selectedOption = when (selectedDate) {
+        today -> DateSelectorOption.Today
+        tomorrow -> DateSelectorOption.Tomorrow
+        else -> DateSelectorOption.Custom
+    }
+    OutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Prayer times for:",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+
+                Text(
+                    text = selectedDate.format(selectedDateFormatter),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                DateOptionButton(
+                    option = DateSelectorOption.Today,
+                    selectedOption = selectedOption,
+                    index = 0,
+                    count = DateSelectorOption.entries.size,
+                ) {
+                    selectedDateText = today.toString()
+                    onDateSelected(today)
+                }
+                DateOptionButton(
+                    option = DateSelectorOption.Tomorrow,
+                    selectedOption = selectedOption,
+                    index = 1,
+                    count = DateSelectorOption.entries.size,
+                ) {
+                    selectedDateText = tomorrow.toString()
+                    onDateSelected(tomorrow)
+                }
+                DateOptionButton(
+                    option = DateSelectorOption.Custom,
+                    selectedOption = selectedOption,
+                    index = 2,
+                    count = DateSelectorOption.entries.size,
+                ) {
+                    showDatePicker = true
+                }
+            }
+        }
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = selectedDate.toDatePickerMillis()
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { selectedMillis ->
+                            val pickedDate = selectedMillis.toDatePickerLocalDate()
+                            selectedDateText = pickedDate.toString()
+                            onDateSelected(pickedDate)
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("Use date")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun SingleChoiceSegmentedButtonRowScope.DateOptionButton(
+    option: DateSelectorOption,
+    selectedOption: DateSelectorOption,
+    index: Int,
+    count: Int,
+    onClick: () -> Unit,
+) {
+    SegmentedButton(
+        selected = option == selectedOption,
+        onClick = onClick,
+        shape = SegmentedButtonDefaults.itemShape(index = index, count = count),
+        label = {
+            Text(
+                text = option.label,
+                maxLines = 1,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+    )
+}
+
+private enum class DateSelectorOption(val label: String) {
+    Today("Today"),
+    Tomorrow("Tomorrow"),
+    Custom("Custom"),
+}
+
+private val selectedDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("EEE, d MMM yyyy")
+
+private fun LocalDate.toDatePickerMillis(): Long =
+    atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+
+private fun Long.toDatePickerLocalDate(): LocalDate =
+    Instant.ofEpochMilli(this).atZone(ZoneOffset.UTC).toLocalDate()
