@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayer_times
+package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -27,19 +27,23 @@ fun PrayerTimeRow(
     name: String,
     startTime: String,
     iqamahTime: String,
+    modifier: Modifier = Modifier,
     isHeader: Boolean = false,
     highlighted: Boolean = false,
+    isAdhanNext: Boolean = false,
 ) {
 
     val isDarkTheme = isSystemInDarkTheme()
     val adhanColor = if (isDarkTheme) AdhanDark else AdhanLight
     val iqamahColor = if (isDarkTheme) IqamahDark else IqamahLight
 
+    val colorScheme = MaterialTheme.colorScheme;
+
     Box(
-        Modifier
+        modifier
             .padding(horizontal = 12.dp)
             .background(
-                if (highlighted) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                if (highlighted) (if (isAdhanNext) colorScheme.tertiaryContainer else colorScheme.primaryContainer) else Color.Transparent,
                 RoundedCornerShape(12.dp)
             )
     ) {

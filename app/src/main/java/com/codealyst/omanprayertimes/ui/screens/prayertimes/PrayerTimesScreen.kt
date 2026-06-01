@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayer_times
+package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun PrayerTimesScreen() {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+fun PrayerTimesScreen(modifier: Modifier = Modifier) {
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -23,7 +23,7 @@ fun PrayerTimesScreen() {
                     .weight(1f)
                     .fillMaxWidth()
             )
-            TimerSection("Dhuhr", false, secondsLeft = 4500)
+            TimerSection("Dhuhr", true, secondsLeft = 4500)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayer_times
+package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,9 @@ import com.codealyst.omanprayertimes.ui.theme.IqamahDark
 import com.codealyst.omanprayertimes.ui.theme.IqamahLight
 
 @Composable
-fun TimerSection(salahName: String, isAdhan: Boolean, secondsLeft: Int) {
+fun TimerSection(
+    salahName: String, isAdhan: Boolean, secondsLeft: Int, modifier: Modifier = Modifier,
+) {
     val isDarkTheme = isSystemInDarkTheme()
     val adhanColor = if (isDarkTheme) AdhanDark else AdhanLight
     val iqamahColor = if (isDarkTheme) IqamahDark else IqamahLight
@@ -27,6 +29,7 @@ fun TimerSection(salahName: String, isAdhan: Boolean, secondsLeft: Int) {
     var labelColor = if (isAdhan) adhanColor else iqamahColor
 
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)

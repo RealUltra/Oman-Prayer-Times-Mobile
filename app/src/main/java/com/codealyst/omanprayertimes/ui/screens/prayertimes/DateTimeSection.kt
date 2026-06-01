@@ -1,6 +1,5 @@
-package com.codealyst.omanprayertimes.ui.screens.prayer_times
+package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
 
 @Composable
-fun DateTimeSection() {
+fun DateTimeSection(modifier: Modifier = Modifier) {
     val omanZone = ZoneId.of("Asia/Muscat")
     var now by remember { mutableStateOf(ZonedDateTime.now(omanZone)) }
 
@@ -38,23 +37,23 @@ fun DateTimeSection() {
     }
 
     val timeText = now.format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
-    val dateText = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    val dateText = now.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy"))
     val hijriDateText = formatHijrahDate(HijrahDate.from(now))
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 28.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             timeText,
             style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
         )
+        Spacer(Modifier.height(8.dp))
         Text(
             dateText,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
         )
         Spacer(Modifier.height(16.dp))
         Text(
