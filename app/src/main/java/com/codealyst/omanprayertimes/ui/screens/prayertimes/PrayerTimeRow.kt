@@ -39,11 +39,20 @@ fun PrayerTimeRow(
 
     val colorScheme = MaterialTheme.colorScheme;
 
+    val highlightColor = if (!highlighted) {
+        Color.Transparent
+    } else if (isAdhanNext) {
+        colorScheme.tertiaryContainer
+    } else {
+        colorScheme.primaryContainer
+    }
+
+
     Box(
         modifier
             .padding(horizontal = 12.dp)
             .background(
-                if (highlighted) (if (isAdhanNext) colorScheme.tertiaryContainer else colorScheme.primaryContainer) else Color.Transparent,
+                highlightColor,
                 RoundedCornerShape(12.dp)
             )
     ) {

@@ -46,7 +46,7 @@ fun TimerSection(
     }
 
     OutlinedCard(
-        modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
     ) {
         Column(
             modifier = Modifier

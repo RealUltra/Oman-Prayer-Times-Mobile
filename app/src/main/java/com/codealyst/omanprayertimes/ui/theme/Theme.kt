@@ -8,7 +8,6 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -25,10 +24,10 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = OnMosqueGoldDark,
     tertiaryContainer = MosqueGoldContainerDark,
     onTertiaryContainer = OnMosqueGoldContainerDark,
-    error = Color(0xFFFFB4AB),
-    onError = Color(0xFF690005),
-    errorContainer = Color(0xFF93000A),
-    onErrorContainer = Color(0xFFFFDAD6),
+    error = ErrorDark,
+    onError = OnErrorDark,
+    errorContainer = ErrorContainerDark,
+    onErrorContainer = OnErrorContainerDark,
     background = BackgroundDark,
     onBackground = OnBackgroundDark,
     surface = SurfaceDark,
@@ -45,6 +44,9 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = SurfaceContainerHighestDark,
     outline = OutlineDark,
     outlineVariant = OutlineVariantDark,
+    scrim = ScrimDark,
+    inverseSurface = InverseSurfaceDark,
+    inverseOnSurface = InverseOnSurfaceDark,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -61,10 +63,10 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = OnMosqueGoldLight,
     tertiaryContainer = MosqueGoldContainerLight,
     onTertiaryContainer = OnMosqueGoldContainerLight,
-    error = Color(0xFFBA1A1A),
-    onError = Color(0xFFFFFFFF),
-    errorContainer = Color(0xFFFFDAD6),
-    onErrorContainer = Color(0xFF410002),
+    error = ErrorLight,
+    onError = OnErrorLight,
+    errorContainer = ErrorContainerLight,
+    onErrorContainer = OnErrorContainerLight,
     background = BackgroundLight,
     onBackground = OnBackgroundLight,
     surface = SurfaceLight,
@@ -81,6 +83,9 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHighest = SurfaceContainerHighestLight,
     outline = OutlineLight,
     outlineVariant = OutlineVariantLight,
+    scrim = ScrimLight,
+    inverseSurface = InverseSurfaceLight,
+    inverseOnSurface = InverseOnSurfaceLight,
 )
 
 @Composable

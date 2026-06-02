@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(start = 16.dp, end = 16.dp, top = 28.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
