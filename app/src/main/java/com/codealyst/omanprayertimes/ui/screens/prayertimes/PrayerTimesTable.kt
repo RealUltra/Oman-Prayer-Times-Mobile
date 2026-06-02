@@ -10,21 +10,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
-import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun PrayerTimesTable(modifier: Modifier = Modifier) {
-    val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
+fun PrayerTimesTable(
+    prayerTimesViewModel: PrayerTimesViewModel,
+    timerMetadata: TimerMetadata,
+    modifier: Modifier = Modifier
+) {
     val state = prayerTimesViewModel.state.value
-
-    prayerTimesViewModel.fetchPrayerTimesForDate(LocalDate.now(ZoneId.of("Asia/Muscat")))
 
     val fajrTime = if (state is UiState.Success) convertTo12Hour(state.data.fajrTime) else "-"
     val shurooqTime = if (state is UiState.Success) convertTo12Hour(state.data.shurooqTime) else "-"
@@ -42,12 +40,48 @@ fun PrayerTimesTable(modifier: Modifier = Modifier) {
             Modifier
                 .verticalScroll(rememberScrollState())
         ) {
-            PrayerTimeRow("Fajr", fajrTime, "04:19 AM")
-            PrayerTimeRow("Shurooq", shurooqTime, "-")
-            PrayerTimeRow("Dhuhr", dhuhrTime, "12:30 PM", highlighted = true, isAdhanNext = true)
-            PrayerTimeRow("Asr", asrTime, "03:49 PM")
-            PrayerTimeRow("Maghrib", maghribTime, "06:59 PM")
-            PrayerTimeRow("Isha'a", ishaaTime, "08:35 PM")
+            PrayerTimeRow(
+                "Fajr",
+                fajrTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Fajr"),
+                isAdhanNext = timerMetadata.isAdhan ?: false
+            )
+            PrayerTimeRow(
+                "Shurooq",
+                shurooqTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Shurooq"),
+                isAdhanNext = true
+            )
+            PrayerTimeRow(
+                "Dhuhr",
+                dhuhrTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Dhuhr"),
+                isAdhanNext = timerMetadata.isAdhan ?: false
+            )
+            PrayerTimeRow(
+                "Asr",
+                asrTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Asr"),
+                isAdhanNext = timerMetadata.isAdhan ?: false
+            )
+            PrayerTimeRow(
+                "Maghrib",
+                maghribTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Maghrib"),
+                isAdhanNext = timerMetadata.isAdhan ?: false
+            )
+            PrayerTimeRow(
+                "Isha'a",
+                ishaaTime,
+                "-",
+                highlighted = (timerMetadata.salahName == "Isha'a"),
+                isAdhanNext = timerMetadata.isAdhan ?: false
+            )
         }
     }
 }

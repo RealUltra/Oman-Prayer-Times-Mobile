@@ -3,68 +3,148 @@ package com.codealyst.omanprayertimes.ui.screens.prayertimes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
+import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
 import com.codealyst.omanprayertimes.ui.theme.AdhanDark
 import com.codealyst.omanprayertimes.ui.theme.AdhanLight
 import com.codealyst.omanprayertimes.ui.theme.IqamahDark
 import com.codealyst.omanprayertimes.ui.theme.IqamahLight
+import java.time.Duration
+import java.time.LocalTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun TimerSection(
-    salahName: String, isAdhan: Boolean, secondsLeft: Int, modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
+    timerMetadata: TimerMetadata? = null,
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val adhanColor = if (isDarkTheme) AdhanDark else AdhanLight
     val iqamahColor = if (isDarkTheme) IqamahDark else IqamahLight
 
-    var label = salahName + (if (isAdhan) " Adhan " else " Iqamah ") + "in"
-    var labelColor = if (isAdhan) adhanColor else iqamahColor
+    val label: String;
+    val labelColor = if (timerMetadata?.isAdhan ?: true) adhanColor else iqamahColor
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    if (timerMetadata == null) {
+        label = "";
+    } else {
+        val suffix =
+            if (timerMetadata.isAdhan == null) "" else if (timerMetadata.isAdhan) " Adhan" else " Iqamah";
+        label = "${timerMetadata.salahName}${suffix} in"
+    }
+
+    OutlinedCard(
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp)
     ) {
-        HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
-        Spacer(Modifier.height(12.dp))
-
-        Text(
-            label,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.outline
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (timerMetadata != null) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+            Text(
+                if (timerMetadata != null) formatTime(timerMetadata.secondsLeft) else "-",
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = labelColor
             )
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            formatTime(secondsLeft),
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-            color = labelColor
-        )
-
-        Spacer(Modifier.height(12.dp))
-        HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
+        }
     }
 }
 
 fun formatTime(seconds: Int): String {
     val totalSeconds = seconds.coerceAtLeast(0)
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val remainingSeconds = totalSeconds % 60
 
-    return if (hours > 0) {
+    return if (totalSeconds > 3600) {
+        val roundedMinutes = (totalSeconds + 59) / 60
+        val hours = roundedMinutes / 60
+        val minutes = roundedMinutes % 60
         "${hours}h ${minutes}m"
-    } else if (minutes > 0) {
+    } else if (totalSeconds >= 60) {
+        val minutes = (totalSeconds + 59) / 60
         "${minutes}m"
     } else {
-        "${remainingSeconds}s"
+        "${totalSeconds}s"
     }
+}
+
+data class TimerMetadata(
+    val salahName: String,
+    val isAdhan: Boolean?,
+    val secondsLeft: Int,
+)
+
+fun getTimerMetadata(
+    now: ZonedDateTime,
+    state: UiState<DailyPrayerTimes>
+): TimerMetadata? {
+    if (state !is UiState.Success) {
+        return null;
+    }
+
+    val dailyPrayerTimes = state.data
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val prayerTimes: List<Pair<String, String>> = listOf(
+        "Fajr" to dailyPrayerTimes.fajrTime,
+        "Shurooq" to dailyPrayerTimes.shurooqTime,
+        "Dhuhr" to dailyPrayerTimes.dhuhrTime,
+        "Asr" to dailyPrayerTimes.asrTime,
+        "Maghrib" to dailyPrayerTimes.maghribTime,
+        "Isha'a" to dailyPrayerTimes.ishaaTime,
+    )
+
+    var nextPrayerName = ""
+    var nextPrayerTime: LocalTime? = null
+    val currentTime = now.toLocalTime()
+
+    for ((name, timeText) in prayerTimes) {
+        val prayerTime = LocalTime.parse(timeText, timeFormatter)
+        if (prayerTime.isAfter(currentTime)) {
+            nextPrayerName = name
+            nextPrayerTime = prayerTime
+            break
+        }
+    }
+
+    var nextPrayerDate = now.toLocalDate()
+
+    if (nextPrayerTime == null) {
+        nextPrayerName = "Fajr"
+        nextPrayerTime = LocalTime.parse(dailyPrayerTimes.fajrTime, timeFormatter)
+        nextPrayerDate = nextPrayerDate.plusDays(1)
+    }
+
+    val nextPrayerDateTime = nextPrayerDate
+        .atTime(nextPrayerTime)
+        .atZone(now.zone)
+
+    val millisecondsLeft = Duration.between(now, nextPrayerDateTime).toMillis()
+    val secondsLeft = ((millisecondsLeft + 999) / 1000).toInt()
+
+    return TimerMetadata(
+        salahName = nextPrayerName,
+        isAdhan = if (nextPrayerName == "Shurooq") null else true,
+        secondsLeft = secondsLeft,
+    )
 }

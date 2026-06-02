@@ -8,34 +8,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.chrono.HijrahDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
 
 @Composable
-fun DateTimeSection(modifier: Modifier = Modifier) {
-    val omanZone = ZoneId.of("Asia/Muscat")
-    var now by remember { mutableStateOf(ZonedDateTime.now(omanZone)) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            now = ZonedDateTime.now(omanZone)
-            delay(1000)
-        }
-    }
-
+fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
     val timeText = now.format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
     val dateText = now.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy"))
     val hijriDateText = formatHijrahDate(HijrahDate.from(now))
