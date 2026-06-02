@@ -1,27 +1,28 @@
 package com.codealyst.omanprayertimes.features.prayertimes
 
-import com.codealyst.omanprayertimes.features.api.RetrofitInstance
+import com.codealyst.omanprayertimes.features.api.PrayerTimesApiService
 import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
-import com.codealyst.omanprayertimes.features.api.dtos.PrayerTimesPayload
+import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
+import com.codealyst.omanprayertimes.features.database.daos.CityDao
+import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
+import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
 import java.time.LocalDate
+import javax.inject.Inject
 
-class PrayerTimesRepository {
-
+class PrayerTimesRepository @Inject constructor(
+    private val api: PrayerTimesApiService,
+    private val yearlyPrayerTimesDao: YearlyPrayerTimesDao,
+    private val dailyPrayerTimesDao: DailyPrayerTimesDao,
+    private val citiesCacheDao: CitiesCacheDao,
+    private val cityDao: CityDao
+) {
     suspend fun getCities(cityId: Int? = null): List<City> {
-        return RetrofitInstance.api.getCities(cityId).cities;
-    }
-
-    suspend fun getPrayerTimes(
-        year: Int? = null,
-        month: Int? = null,
-        cityId: Int? = null
-    ): PrayerTimesPayload {
-        return RetrofitInstance.api.getPrayerTimes(year, month, cityId);
+        return api.getCities(cityId).cities;
     }
 
     suspend fun getPrayerTimesForDate(date: LocalDate, cityId: Int? = null): DailyPrayerTimes {
-        val payload = RetrofitInstance.api.getPrayerTimes(
+        val payload = api.getPrayerTimes(
             year = date.year,
             month = date.month.value,
             cityId = cityId,

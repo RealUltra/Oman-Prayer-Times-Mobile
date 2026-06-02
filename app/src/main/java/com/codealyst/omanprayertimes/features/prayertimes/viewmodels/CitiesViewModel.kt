@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.prayertimes.PrayerTimesRepository
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CitiesViewModel : ViewModel() {
-    private val repository = PrayerTimesRepository()
-
+class CitiesViewModel @Inject constructor(private val repository: PrayerTimesRepository) :
+    ViewModel() {
     private val _state: MutableState<UiState<List<City>>> =
         mutableStateOf(UiState.Loading)
     val state: State<UiState<List<City>>> = _state

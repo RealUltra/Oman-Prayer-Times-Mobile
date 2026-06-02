@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
 import java.time.LocalDate
@@ -21,7 +21,7 @@ import java.util.Locale
 
 @Composable
 fun PrayerTimesTable(modifier: Modifier = Modifier) {
-    val prayerTimesViewModel: PrayerTimesViewModel = viewModel();
+    val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
     val state = prayerTimesViewModel.state.value
 
     prayerTimesViewModel.fetchPrayerTimesForDate(LocalDate.now(ZoneId.of("Asia/Muscat")))

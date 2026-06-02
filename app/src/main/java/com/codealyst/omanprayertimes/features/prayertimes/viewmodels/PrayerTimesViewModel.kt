@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import com.codealyst.omanprayertimes.features.prayertimes.PrayerTimesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
-class PrayerTimesViewModel : ViewModel() {
-    private val repository = PrayerTimesRepository()
-
+@HiltViewModel
+class PrayerTimesViewModel @Inject constructor(private val repository: PrayerTimesRepository) :
+    ViewModel() {
     private val _state: MutableState<UiState<DailyPrayerTimes>> =
         mutableStateOf(UiState.Loading)
     val state: State<UiState<DailyPrayerTimes>> = _state

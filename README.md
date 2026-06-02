@@ -1,7 +1,13 @@
 # Oman Prayer Times
 
 ***An app for viewing daily prayer times in Oman from the
-the Ministry of Endowments and Religious Affairs (MERA)'s website.***
+the [Ministry of Endowments and Religious Affairs (MERA)'s website](https://www.mara.gov.om/calendar_page2.asp).
+***
+
+## API
+
+***The github repository for the api is
+available [here](https://github.com/RealUltra/oman-prayer-times-api).***
 
 ## Features
 
@@ -37,7 +43,11 @@ To build a debug APK:
 
 ## Planned
 
-*Nothing to see here*
+### v26.06.1
+
+- Added: Prayer Times from MERA's website for any date.
+- Added: Next Event Timer.
+- Added: Prayer Times caching for offline use.
 
 ## Changelog
 
