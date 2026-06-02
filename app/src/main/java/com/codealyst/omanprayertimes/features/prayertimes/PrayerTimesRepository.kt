@@ -7,6 +7,10 @@ import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
 import com.codealyst.omanprayertimes.features.database.daos.CityDao
 import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
 import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
+import com.codealyst.omanprayertimes.features.database.entities.DailyPrayerTimesEntity
+import com.codealyst.omanprayertimes.features.database.entities.YearlyPrayerTimesEntity
+import com.codealyst.omanprayertimes.features.database.entities.toDto
+import java.time.DateTimeException
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -17,18 +21,98 @@ class PrayerTimesRepository @Inject constructor(
     private val citiesCacheDao: CitiesCacheDao,
     private val cityDao: CityDao
 ) {
+    companion object {
+        private const val PRAYER_TIMES_CACHE_DURATION =
+            30 * 24 * 60 * 60 * 1000L // 30 days in milliseconds
+    }
+
     suspend fun getCities(cityId: Int? = null): List<City> {
         return api.getCities(cityId).cities;
     }
 
-    suspend fun getPrayerTimesForDate(date: LocalDate, cityId: Int? = null): DailyPrayerTimes {
-        val payload = api.getPrayerTimes(
-            year = date.year,
-            month = date.month.value,
-            cityId = cityId,
+    suspend fun getPrayerTimesForDate(
+        date: LocalDate,
+        cityId: Int = 0
+    ): DailyPrayerTimes {
+        // Prepare the date key with the current year
+        val currentYear = LocalDate.now().year;
+        val dateKey = date.withYearSafe(currentYear).toString();
+        val now = System.currentTimeMillis();
+
+        // Check the cache for prayer times.
+        val cachedDay = dailyPrayerTimesDao.getByDate(cityId, dateKey)
+        val cachedYear = yearlyPrayerTimesDao.getByYear(cityId, currentYear)
+
+        // Return cached prayer times if they haven't expired.
+        if (cachedDay != null && cachedYear != null && cachedYear.expiresAt > now) {
+            println("Cached prayer times found for date: ${date.toString()}");
+            return cachedDay.toDto(displayDate = date.toString());
+        }
+
+        // Refresh prayer times.
+        try {
+            refreshYearlyPrayerTimes(currentYear, cityId);
+        } catch (_: Exception) {
+        }
+
+        // Try fetching the prayer times again after refresh.
+        dailyPrayerTimesDao.getByDate(cityId, dateKey)?.let {
+            return it.toDto(displayDate = date.toString());
+        };
+
+        // If still not found, try to find the latest cached year and use that as a fallback.
+        val fallbackYear =
+            yearlyPrayerTimesDao.getLatestCachedYear(cityId)
+                ?: error("No prayer times found for date: ${date.toString()}");
+
+        // Prepare the fallback date key and check the cache again.
+        val fallbackDateKey = date.withYearSafe(fallbackYear).toString()
+        val fallbackDay = dailyPrayerTimesDao.getByDate(cityId, fallbackDateKey)
+
+        return fallbackDay?.toDto(displayDate = date.toString())
+            ?: error("No prayer times found for date: ${date.toString()}");
+    }
+
+    private suspend fun refreshYearlyPrayerTimes(year: Int, cityId: Int) {
+        // Fetch prayer times from the API.
+        val response = api.getPrayerTimes(year = year, cityId = cityId)
+
+        // Cache the fetched prayer times in the database.
+        val fetchedAt = System.currentTimeMillis();
+        val expiresAt = fetchedAt + PRAYER_TIMES_CACHE_DURATION;
+
+        yearlyPrayerTimesDao.upsert(
+            YearlyPrayerTimesEntity(
+                cityId = cityId,
+                year = year,
+                fetchedAt = fetchedAt,
+                expiresAt = expiresAt
+            )
         )
 
-        return payload.prayerTimes[date.toString()]
-            ?: error("No prayer times found for date: ${date.toString()}");
+        dailyPrayerTimesDao.upsertAll(
+            response.prayerTimes.map { dailyPrayerTimes ->
+                DailyPrayerTimesEntity(
+                    year = year,
+                    cityId = cityId,
+                    date = dailyPrayerTimes.value.date,
+                    fajr = dailyPrayerTimes.value.fajrTime,
+                    sunrise = dailyPrayerTimes.value.shurooqTime,
+                    dhuhr = dailyPrayerTimes.value.dhuhrTime,
+                    asr = dailyPrayerTimes.value.asrTime,
+                    maghrib = dailyPrayerTimes.value.maghribTime,
+                    isha = dailyPrayerTimes.value.ishaaTime
+                )
+            }
+        )
+    }
+}
+
+fun LocalDate.withYearSafe(targetYear: Int): LocalDate {
+    return try {
+        this.withYear(targetYear)
+    } catch (_: DateTimeException) {
+        // Handle invalid date (e.g., February 29 on a non-leap year)
+        LocalDate.of(targetYear, this.month, this.dayOfMonth.coerceAtMost(28))
     }
 }

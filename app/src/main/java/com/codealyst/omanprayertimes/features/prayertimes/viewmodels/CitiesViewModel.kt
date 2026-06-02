@@ -20,7 +20,7 @@ class CitiesViewModel @Inject constructor(private val repository: PrayerTimesRep
         fetchCities()
     }
 
-    fun fetchCities(cityId: Int? = null) {
+    fun fetchCities(cityId: Int = 0) {
         viewModelScope.launch {
             try {
                 val response = repository.getCities(cityId)

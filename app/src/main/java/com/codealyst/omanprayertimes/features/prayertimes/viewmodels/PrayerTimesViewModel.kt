@@ -19,7 +19,7 @@ class PrayerTimesViewModel @Inject constructor(private val repository: PrayerTim
         mutableStateOf(UiState.Loading)
     val state: State<UiState<DailyPrayerTimes>> = _state
 
-    fun fetchPrayerTimesForDate(date: LocalDate, cityId: Int? = null) {
+    fun fetchPrayerTimesForDate(date: LocalDate, cityId: Int = 0) {
         viewModelScope.launch {
             try {
                 val response = repository.getPrayerTimesForDate(date, cityId)
