@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,24 +46,26 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
     val timerMetadata = getTimerMetadata(now, prayerTimesViewModel.state.value)
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            DateTimeSection(now = now)
+        Box() {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                DateTimeSection(now = now)
 
-            TimerSection(timerMetadata = timerMetadata)
+                TimerSection(timerMetadata = timerMetadata)
 
-            PrayerTimesTable(
-                prayerTimesViewModel,
-                timerMetadata ?: TimerMetadata("", false, 0),
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-            )
-            DateSelector(onDateSelected = { date -> tableDate = date.toString() })
+                PrayerTimesTable(
+                    prayerTimesViewModel,
+                    timerMetadata ?: TimerMetadata("", false, 0),
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                )
+                DateSelector(onDateSelected = { date -> tableDate = date.toString() })
 
+            }
         }
     }
 }

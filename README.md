@@ -1,10 +1,12 @@
 # Oman Prayer Times
 
 ***An app for viewing daily prayer times in Oman from the
-the [Ministry of Endowments and Religious Affairs (MERA)'s website](https://www.mara.gov.om/calendar_page2.asp).
-***
+Ministry of Endowments and Religious Affairs (MERA)'s website.***
 
 ## API
+
+***The Ministry of Endowments and Religious Affairs (MERA)'s website is
+available [here](https://www.mara.gov.om/calendar_page2.asp).***
 
 ***The github repository for the api is
 available [here](https://github.com/RealUltra/oman-prayer-times-api).***

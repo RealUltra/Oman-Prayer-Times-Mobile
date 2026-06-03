@@ -1,19 +1,30 @@
 package com.codealyst.omanprayertimes.ui.screens.prayertimes
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
 import com.codealyst.omanprayertimes.ui.theme.AdhanDark
@@ -45,8 +56,30 @@ fun TimerSection(
         label = "${timerMetadata.salahName}${suffix} in"
     }
 
-    OutlinedCard(
-        modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
+    val colorScheme = MaterialTheme.colorScheme
+    val fonts = MaterialTheme.typography;
+
+    val textureBitmap = ImageBitmap.imageResource(id = R.drawable.texture2);
+
+    Box(
+        modifier = modifier
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .border(1.dp, colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+            .drawBehind {
+                drawRect(
+                    brush = ShaderBrush(
+                        shader = ImageShader(
+                            image = textureBitmap,
+                            tileModeX = TileMode.Repeated,
+                            tileModeY = TileMode.Repeated,
+                        )
+                    ),
+                    colorFilter = ColorFilter.tint(
+                        color = colorScheme.onBackground.copy(alpha = 0.0f),
+                        blendMode = BlendMode.Modulate,
+                    ),
+                )
+            }
     ) {
         Column(
             modifier = Modifier
@@ -57,16 +90,16 @@ fun TimerSection(
             if (timerMetadata != null) {
                 Text(
                     label,
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = fonts.labelMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.outline
+                        color = colorScheme.outline
                     )
                 )
                 Spacer(Modifier.height(8.dp))
             }
             Text(
                 if (timerMetadata != null) formatTime(timerMetadata.secondsLeft) else "-",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                style = fonts.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = labelColor
             )
         }

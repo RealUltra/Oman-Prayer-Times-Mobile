@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,14 +48,18 @@ fun PrayerTimeRow(
         colorScheme.primaryContainer
     }
 
-
     Box(
-        modifier
+        modifier = modifier
             .padding(horizontal = 12.dp)
             .background(
-                highlightColor,
+                Brush.horizontalGradient(
+                    colors = listOf(
+                        highlightColor.darken(0.5f),
+                        highlightColor,
+                    )
+                ),
                 RoundedCornerShape(12.dp)
-            )
+            ),
     ) {
         Row(
             modifier = Modifier
@@ -87,4 +92,13 @@ fun PrayerTimeRow(
             )
         }
     }
+}
+
+fun Color.darken(amount: Float): Color {
+    return Color(
+        red = red * (1f - amount),
+        green = green * (1f - amount),
+        blue = blue * (1f - amount),
+        alpha = alpha
+    )
 }

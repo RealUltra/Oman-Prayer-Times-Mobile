@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
 import java.time.LocalTime
@@ -31,57 +32,61 @@ fun PrayerTimesTable(
     val maghribTime = if (state is UiState.Success) convertTo12Hour(state.data.maghribTime) else "-"
     val ishaaTime = if (state is UiState.Success) convertTo12Hour(state.data.ishaaTime) else "-"
 
+    val colorScheme = MaterialTheme.colorScheme;
+
     Column(modifier) {
         PrayerTimeRow("Salah", "Adhan", "Iqamah", isHeader = true)
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, thickness = 2.dp)
         Spacer(Modifier.height(8.dp))
 
-        Column(
-            Modifier
-                .verticalScroll(rememberScrollState())
-        ) {
-            PrayerTimeRow(
-                "Fajr",
-                fajrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Fajr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Shurooq",
-                shurooqTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Shurooq"),
-                isAdhanNext = true
-            )
-            PrayerTimeRow(
-                "Dhuhr",
-                dhuhrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Dhuhr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Asr",
-                asrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Asr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Maghrib",
-                maghribTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Maghrib"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Isha'a",
-                ishaaTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Isha'a"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
+        TiledBox(R.drawable.texture3, alpha = 0.05f) {
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+            ) {
+                PrayerTimeRow(
+                    "Fajr",
+                    fajrTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Fajr"),
+                    isAdhanNext = timerMetadata.isAdhan ?: false
+                )
+                PrayerTimeRow(
+                    "Shurooq",
+                    shurooqTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Shurooq"),
+                    isAdhanNext = true
+                )
+                PrayerTimeRow(
+                    "Dhuhr",
+                    dhuhrTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Dhuhr"),
+                    isAdhanNext = timerMetadata.isAdhan ?: false
+                )
+                PrayerTimeRow(
+                    "Asr",
+                    asrTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Asr"),
+                    isAdhanNext = timerMetadata.isAdhan ?: false
+                )
+                PrayerTimeRow(
+                    "Maghrib",
+                    maghribTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Maghrib"),
+                    isAdhanNext = timerMetadata.isAdhan ?: false
+                )
+                PrayerTimeRow(
+                    "Isha'a",
+                    ishaaTime,
+                    "-",
+                    highlighted = (timerMetadata.salahName == "Isha'a"),
+                    isAdhanNext = timerMetadata.isAdhan ?: false
+                )
+            }
         }
     }
 }
