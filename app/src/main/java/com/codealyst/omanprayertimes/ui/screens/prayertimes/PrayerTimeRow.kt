@@ -52,10 +52,10 @@ fun PrayerTimeRow(
         modifier = modifier
             .padding(horizontal = 12.dp)
             .background(
-                Brush.horizontalGradient(
+                Brush.verticalGradient(
                     colors = listOf(
-                        highlightColor.darken(0.5f),
                         highlightColor,
+                        highlightColor.darken(0.5f),
                     )
                 ),
                 RoundedCornerShape(12.dp)
