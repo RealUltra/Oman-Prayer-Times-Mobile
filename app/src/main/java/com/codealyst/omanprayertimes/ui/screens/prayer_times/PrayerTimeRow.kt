@@ -1,8 +1,7 @@
-package com.codealyst.omanprayertimes.ui.screens.prayertimes
+package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.ui.components.TiledBox
 import com.codealyst.omanprayertimes.ui.theme.AdhanDark
 import com.codealyst.omanprayertimes.ui.theme.AdhanLight
 import com.codealyst.omanprayertimes.ui.theme.IqamahDark
@@ -48,7 +49,7 @@ fun PrayerTimeRow(
         colorScheme.primaryContainer
     }
 
-    Box(
+    TiledBox(
         modifier = modifier
             .padding(horizontal = 12.dp)
             .background(
@@ -60,6 +61,8 @@ fun PrayerTimeRow(
                 ),
                 RoundedCornerShape(12.dp)
             ),
+        resourceId = R.drawable.texture3,
+        alpha = if (highlighted) 0.1f else 0.0f,
     ) {
         Row(
             modifier = Modifier

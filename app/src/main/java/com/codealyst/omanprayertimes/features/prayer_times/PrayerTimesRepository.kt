@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.features.prayertimes
+package com.codealyst.omanprayertimes.features.prayer_times
 
 import com.codealyst.omanprayertimes.features.api.PrayerTimesApiService
 import com.codealyst.omanprayertimes.features.api.dtos.City
@@ -7,6 +7,8 @@ import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
 import com.codealyst.omanprayertimes.features.database.daos.CityDao
 import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
 import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
+import com.codealyst.omanprayertimes.features.database.entities.CitiesCacheEntity
+import com.codealyst.omanprayertimes.features.database.entities.CityEntity
 import com.codealyst.omanprayertimes.features.database.entities.DailyPrayerTimesEntity
 import com.codealyst.omanprayertimes.features.database.entities.YearlyPrayerTimesEntity
 import com.codealyst.omanprayertimes.features.database.entities.toDto
@@ -24,10 +26,39 @@ class PrayerTimesRepository @Inject constructor(
     companion object {
         private const val PRAYER_TIMES_CACHE_DURATION =
             30 * 24 * 60 * 60 * 1000L // 30 days in milliseconds
+
+        private const val CITIES_CACHE_DURATION =
+            30 * 24 * 60 * 60 * 1000L // 30 days in milliseconds
     }
 
     suspend fun getCities(cityId: Int? = null): List<City> {
-        return api.getCities(cityId).cities;
+        // Check the cache for cities list.
+        val cachedCities = citiesCacheDao.getLatest()
+
+        // Return cached prayer times if they haven't expired.
+        val now = System.currentTimeMillis();
+
+        if (cachedCities != null && cachedCities.expiresAt > now) {
+            println("Cached cities list found.");
+            val cityEntities = cityDao.getByCache(cachedCities.id)
+            return cityEntities.map { e -> e.toDto() }
+                .filter { c -> cityId == null || c.cityId == cityId };
+        }
+
+        // Refresh cities cache.
+        try {
+            refreshCitiesCache();
+        } catch (_: Exception) {
+        }
+
+        // Try fetching the cities list again after refresh.
+        citiesCacheDao.getLatest()?.let {
+            val cityEntities = cityDao.getByCache(it.id)
+            return cityEntities.map { e -> e.toDto() }
+                .filter { c -> cityId == null || c.cityId == cityId };
+        };
+
+        return emptyList();
     }
 
     suspend fun getPrayerTimesForDate(
@@ -102,6 +133,32 @@ class PrayerTimesRepository @Inject constructor(
                     asr = dailyPrayerTimes.value.asrTime,
                     maghrib = dailyPrayerTimes.value.maghribTime,
                     isha = dailyPrayerTimes.value.ishaaTime
+                )
+            }
+        )
+    }
+
+    private suspend fun refreshCitiesCache() {
+        // Fetch cities list from the API.
+        val response = api.getCities()
+
+        // Cache the fetched prayer times in the database.
+        val fetchedAt = System.currentTimeMillis();
+        val expiresAt = fetchedAt + CITIES_CACHE_DURATION;
+
+        val cacheId = citiesCacheDao.insert(
+            CitiesCacheEntity(
+                fetchedAt = fetchedAt,
+                expiresAt = expiresAt
+            )
+        ).toInt()
+
+        cityDao.upsertAll(
+            response.cities.map { c ->
+                CityEntity(
+                    cityId = c.cityId,
+                    cacheId = cacheId,
+                    cityName = c.cityName
                 )
             }
         )

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "cities_cache")
 data class CitiesCacheEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val fetchedAt: Long,
     val expiresAt: Long,
 )

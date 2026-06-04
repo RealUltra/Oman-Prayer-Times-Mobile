@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayertimes
+package com.codealyst.omanprayertimes.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box

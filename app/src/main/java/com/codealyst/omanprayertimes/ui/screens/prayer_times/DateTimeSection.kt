@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayertimes
+package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.ui.components.TiledBox
 import java.time.ZonedDateTime
 import java.time.chrono.HijrahDate
 import java.time.format.DateTimeFormatter

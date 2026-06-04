@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.codealyst.omanprayertimes.ui.screens.prayertimes.PrayerTimesScreen
+import com.codealyst.omanprayertimes.ui.screens.main.MainScreen
 import com.codealyst.omanprayertimes.ui.theme.OmanPrayerTimesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OmanPrayerTimesTheme {
-                PrayerTimesScreen()
+                MainScreen()
             }
         }
     }

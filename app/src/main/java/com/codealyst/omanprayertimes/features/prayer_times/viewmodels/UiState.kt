@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.features.prayertimes.viewmodels
+package com.codealyst.omanprayertimes.features.prayer_times.viewmodels
 
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()

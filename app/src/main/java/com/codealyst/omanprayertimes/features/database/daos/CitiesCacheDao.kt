@@ -18,5 +18,5 @@ interface CitiesCacheDao {
     suspend fun getLatest(): CitiesCacheEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(cache: CitiesCacheEntity)
+    suspend fun insert(cache: CitiesCacheEntity): Long
 }

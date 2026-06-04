@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.prayertimes
+package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
-import com.codealyst.omanprayertimes.features.prayertimes.viewmodels.UiState
+import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.ui.theme.AdhanDark
 import com.codealyst.omanprayertimes.ui.theme.AdhanLight
 import com.codealyst.omanprayertimes.ui.theme.IqamahDark

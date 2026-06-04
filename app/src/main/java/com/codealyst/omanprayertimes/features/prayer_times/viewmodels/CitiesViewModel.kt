@@ -1,28 +1,31 @@
-package com.codealyst.omanprayertimes.features.prayertimes.viewmodels
+package com.codealyst.omanprayertimes.features.prayer_times.viewmodels
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
-import com.codealyst.omanprayertimes.features.prayertimes.PrayerTimesRepository
+import com.codealyst.omanprayertimes.features.api.dtos.City
+import com.codealyst.omanprayertimes.features.prayer_times.PrayerTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayerTimesViewModel @Inject constructor(private val repository: PrayerTimesRepository) :
+class CitiesViewModel @Inject constructor(private val repository: PrayerTimesRepository) :
     ViewModel() {
-    private val _state: MutableState<UiState<DailyPrayerTimes>> =
+    private val _state: MutableState<UiState<List<City>>> =
         mutableStateOf(UiState.Loading)
-    val state: State<UiState<DailyPrayerTimes>> = _state
+    val state: State<UiState<List<City>>> = _state
 
-    fun fetchPrayerTimesForDate(date: LocalDate, cityId: Int = 0) {
+    init {
+        fetchCities()
+    }
+
+    fun fetchCities(cityId: Int? = null) {
         viewModelScope.launch {
             try {
-                val response = repository.getPrayerTimesForDate(date, cityId)
+                val response = repository.getCities(cityId)
                 _state.value = UiState.Success(response)
             } catch (e: Exception) {
                 _state.value = UiState.Error(e.message ?: "Unknown error")
