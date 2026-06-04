@@ -63,7 +63,7 @@ fun TimerSection(
 
     Box(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
             .border(1.dp, colorScheme.outlineVariant, RoundedCornerShape(12.dp))
             .drawBehind {
                 drawRect(

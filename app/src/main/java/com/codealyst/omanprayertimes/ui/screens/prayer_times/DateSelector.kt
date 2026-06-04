@@ -54,7 +54,7 @@ fun DateSelector(
             .padding(horizontal = 16.dp),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {

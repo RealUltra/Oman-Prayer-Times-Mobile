@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.ui.components.TiledBox
@@ -29,11 +28,8 @@ fun Header(modifier: Modifier = Modifier) {
     ) {
         Text(
             "Settings",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 32.dp),
+            modifier = Modifier.padding(bottom = 16.dp, top = 64.dp, start = 20.dp),
             style = fonts.displaySmall.copy(fontWeight = FontWeight.Bold),
-            textAlign = TextAlign.Center
         )
     }
 }
