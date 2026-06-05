@@ -8,11 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -24,6 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.ui.components.SegmentedControl
+import com.codealyst.omanprayertimes.ui.components.SegmentedControlOption
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -57,34 +54,30 @@ fun DateSelector(
             modifier = Modifier.padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                DateOptionButton(
-                    option = DateSelectorOption.Today,
-                    selectedOption = selectedOption,
-                    index = 0,
-                    count = DateSelectorOption.entries.size,
-                ) {
-                    selectedDateText = today.toString()
-                    onDateSelected(today)
+            SegmentedControl(
+                options = DateSelectorOption.entries.map { option ->
+                    SegmentedControlOption(option.label, option)
+                },
+                selectedValue = selectedOption,
+                modifier = Modifier.fillMaxWidth(),
+                onOptionSelected = { option ->
+                    when (option) {
+                        DateSelectorOption.Today -> {
+                            selectedDateText = today.toString()
+                            onDateSelected(today)
+                        }
+
+                        DateSelectorOption.Tomorrow -> {
+                            selectedDateText = tomorrow.toString()
+                            onDateSelected(tomorrow)
+                        }
+
+                        DateSelectorOption.Custom -> {
+                            showDatePicker = true
+                        }
+                    }
                 }
-                DateOptionButton(
-                    option = DateSelectorOption.Tomorrow,
-                    selectedOption = selectedOption,
-                    index = 1,
-                    count = DateSelectorOption.entries.size,
-                ) {
-                    selectedDateText = tomorrow.toString()
-                    onDateSelected(tomorrow)
-                }
-                DateOptionButton(
-                    option = DateSelectorOption.Custom,
-                    selectedOption = selectedOption,
-                    index = 2,
-                    count = DateSelectorOption.entries.size,
-                ) {
-                    showDatePicker = true
-                }
-            }
+            )
         }
     }
 
@@ -118,29 +111,6 @@ fun DateSelector(
             DatePicker(state = datePickerState)
         }
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun SingleChoiceSegmentedButtonRowScope.DateOptionButton(
-    option: DateSelectorOption,
-    selectedOption: DateSelectorOption,
-    index: Int,
-    count: Int,
-    onClick: () -> Unit,
-) {
-    SegmentedButton(
-        selected = option == selectedOption,
-        onClick = onClick,
-        shape = SegmentedButtonDefaults.itemShape(index = index, count = count),
-        label = {
-            Text(
-                text = option.label,
-                maxLines = 1,
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
-    )
 }
 
 private enum class DateSelectorOption(val label: String) {

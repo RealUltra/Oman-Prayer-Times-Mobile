@@ -16,13 +16,15 @@ class SettingsRepository @Inject constructor(
         val CITY_ID = intPreferencesKey("city_id")
         val LANGUAGE = stringPreferencesKey("language")
         val THEME = stringPreferencesKey("theme")
+        val IQAMAH_SETTINGS = stringPreferencesKey("iqamah_settings")
     }
 
     val settingsFlow: Flow<AppSettings> = dataStore.data.map { prefs ->
         AppSettings(
             cityId = prefs[CITY_ID] ?: 0,
             language = prefs[LANGUAGE] ?: "",
-            theme = prefs[THEME] ?: ""
+            theme = prefs[THEME] ?: "",
+            iqamahSettings = prefs[IQAMAH_SETTINGS] ?: "[]"
         )
     }
 
@@ -41,6 +43,12 @@ class SettingsRepository @Inject constructor(
     suspend fun setTheme(theme: String) {
         dataStore.edit { prefs ->
             prefs[THEME] = theme
+        }
+    }
+
+    suspend fun setIqamahSettings(iqamahSettings: List<IqamahSetting>) {
+        dataStore.edit { prefs ->
+            prefs[IQAMAH_SETTINGS] = iqamahSettings.toJson()
         }
     }
 }

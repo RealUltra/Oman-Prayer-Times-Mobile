@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.settings.SettingsViewModel
+import com.codealyst.omanprayertimes.features.settings.toIqamahSettings
+import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.ZoneId
@@ -70,6 +71,7 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
 
         PrayerTimesTable(
             prayerTimesViewModel,
+            settings.iqamahSettings.toIqamahSettings(),
             timerMetadata ?: TimerMetadata("", false, 0),
             modifier = Modifier
                 .weight(1f)

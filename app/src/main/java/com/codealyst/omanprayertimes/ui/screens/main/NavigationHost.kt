@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.codealyst.omanprayertimes.ui.screens.iqamah_times.IqamahTimesScreen
 import com.codealyst.omanprayertimes.ui.screens.prayer_times.PrayerTimesScreen
 import com.codealyst.omanprayertimes.ui.screens.settings.SettingsScreen
 
@@ -20,7 +21,11 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier = Modifi
         }
 
         composable(Destination.SETTINGS.route) {
-            SettingsScreen()
+            SettingsScreen(navController = navController)
+        }
+
+        composable(SettingsRoute.IQAMAH_TIMES) {
+            IqamahTimesScreen()
         }
     }
 }

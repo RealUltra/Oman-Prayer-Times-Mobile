@@ -13,6 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
+import com.codealyst.omanprayertimes.features.settings.IqamahSetting
+import com.codealyst.omanprayertimes.features.settings.PrayerKeys
+import com.codealyst.omanprayertimes.features.settings.get
+import com.codealyst.omanprayertimes.features.settings.getIqamahTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -20,6 +24,7 @@ import java.util.Locale
 @Composable
 fun PrayerTimesTable(
     prayerTimesViewModel: PrayerTimesViewModel,
+    iqamahSettings: List<IqamahSetting>,
     timerMetadata: TimerMetadata,
     modifier: Modifier = Modifier,
 ) {
@@ -31,7 +36,14 @@ fun PrayerTimesTable(
     val dhuhrTime = if (state is UiState.Success) convertTo12Hour(state.data.dhuhrTime) else "-"
     val asrTime = if (state is UiState.Success) convertTo12Hour(state.data.asrTime) else "-"
     val maghribTime = if (state is UiState.Success) convertTo12Hour(state.data.maghribTime) else "-"
-    val ishaaTime = if (state is UiState.Success) convertTo12Hour(state.data.ishaaTime) else "-"
+    val ishaTime = if (state is UiState.Success) convertTo12Hour(state.data.ishaaTime) else "-"
+
+    val fajrIqamahTime = iqamahSettings.get(PrayerKeys.FAJR)?.getIqamahTime(fajrTime) ?: "-"
+    val dhuhrIqamahTime = iqamahSettings.get(PrayerKeys.DHUHR)?.getIqamahTime(dhuhrTime) ?: "-"
+    val asrIqamahTime = iqamahSettings.get(PrayerKeys.ASR)?.getIqamahTime(asrTime) ?: "-"
+    val maghribIqamahTime =
+        iqamahSettings.get(PrayerKeys.MAGHRIB)?.getIqamahTime(maghribTime) ?: "-"
+    val ishaIqamahTime = iqamahSettings.get(PrayerKeys.ISHA)?.getIqamahTime(ishaTime) ?: "-"
 
     val colorScheme = MaterialTheme.colorScheme;
 
@@ -51,7 +63,7 @@ fun PrayerTimesTable(
             PrayerTimeRow(
                 "Fajr",
                 fajrTime,
-                "-",
+                fajrIqamahTime,
                 highlighted = (timerMetadata.salahName == "Fajr"),
                 isAdhanNext = timerMetadata.isAdhan ?: false
             )
@@ -65,28 +77,28 @@ fun PrayerTimesTable(
             PrayerTimeRow(
                 "Dhuhr",
                 dhuhrTime,
-                "-",
+                dhuhrIqamahTime,
                 highlighted = (timerMetadata.salahName == "Dhuhr"),
                 isAdhanNext = timerMetadata.isAdhan ?: false
             )
             PrayerTimeRow(
                 "Asr",
                 asrTime,
-                "-",
+                asrIqamahTime,
                 highlighted = (timerMetadata.salahName == "Asr"),
                 isAdhanNext = timerMetadata.isAdhan ?: false
             )
             PrayerTimeRow(
                 "Maghrib",
                 maghribTime,
-                "-",
+                maghribIqamahTime,
                 highlighted = (timerMetadata.salahName == "Maghrib"),
                 isAdhanNext = timerMetadata.isAdhan ?: false
             )
             PrayerTimeRow(
                 "Isha'a",
-                ishaaTime,
-                "-",
+                ishaTime,
+                ishaIqamahTime,
                 highlighted = (timerMetadata.salahName == "Isha'a"),
                 isAdhanNext = timerMetadata.isAdhan ?: false
             )
