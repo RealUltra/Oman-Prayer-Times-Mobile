@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -58,8 +57,6 @@ fun SettingsScreen(
             SettingsGroup(title = "General") {
                 SettingsRow(title = "City") {
                     SearchableDropdown(
-                        modifier = Modifier
-                            .fillMaxWidth(),
                         options = citiesList.map { c -> DropdownOptions(c.cityName, c.cityId) },
                         selectedValue = settings.cityId,
                         onOptionSelected = { cityId -> settingsViewModel.setCityId(cityId) },
