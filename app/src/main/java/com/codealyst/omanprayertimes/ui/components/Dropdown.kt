@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -65,14 +66,18 @@ fun <T> Dropdown(
                 else -> collapsedTextColor
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = selectedOption?.name ?: placeholder,
+                    modifier = Modifier.weight(1f),
                     style = collapsedTextStyle,
                     color = contentColor
                 )
 
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
                 DropdownArrow(color = contentColor)
             }
@@ -108,4 +113,3 @@ fun <T> Dropdown(
         }
     }
 }
-

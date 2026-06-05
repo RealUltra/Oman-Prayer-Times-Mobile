@@ -55,8 +55,7 @@ fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
             Text(
                 hijriDateText,
                 style = fonts.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.tertiary
+                    fontWeight = FontWeight.Bold
                 )
             )
         }

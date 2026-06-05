@@ -12,7 +12,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
+import com.codealyst.omanprayertimes.features.settings.SettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.ZoneId
@@ -20,17 +22,30 @@ import java.time.ZonedDateTime
 
 @Composable
 fun PrayerTimesScreen(modifier: Modifier = Modifier) {
+    // Oman's timezone
+    val omanZone = ZoneId.of("Asia/Muscat")
+
+    // Prayer times displayed for:
     var tableDate by rememberSaveable {
-        mutableStateOf(LocalDate.now(ZoneId.of("Asia/Muscat")).toString())
+        mutableStateOf(LocalDate.now(omanZone).toString())
     }
 
+    // Get prayer times view model
     val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
 
-    LaunchedEffect(tableDate) {
-        prayerTimesViewModel.fetchPrayerTimesForDate(LocalDate.parse(tableDate));
+    // Get app settings
+    val settingsViewModel = hiltViewModel<SettingsViewModel>()
+    val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+
+    // Every time a date is selected, fetch prayer times.
+    LaunchedEffect(tableDate, settings.cityId) {
+        prayerTimesViewModel.fetchPrayerTimesForDate(
+            LocalDate.parse(tableDate),
+            cityId = settings.cityId
+        );
     }
 
-    val omanZone = ZoneId.of("Asia/Muscat")
+    // Get the current date and time in Oman.
     var now by remember { mutableStateOf(ZonedDateTime.now(omanZone)) }
 
     LaunchedEffect(Unit) {
@@ -40,6 +55,7 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         }
     }
 
+    // Prepare the timer metadata based on current values of the prayer times and the time.
     val timerMetadata = getTimerMetadata(now, prayerTimesViewModel.state.value)
 
     Column(
@@ -48,12 +64,14 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
     ) {
         DateTimeSection(now = now)
 
-        TimerSection(timerMetadata = timerMetadata)
+        TimerSection(
+            timerMetadata = timerMetadata
+        )
 
         PrayerTimesTable(
             prayerTimesViewModel,
             timerMetadata ?: TimerMetadata("", false, 0),
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
         )

@@ -1,7 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,10 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.ui.components.TiledBox
-import com.codealyst.omanprayertimes.ui.theme.AdhanDark
-import com.codealyst.omanprayertimes.ui.theme.AdhanLight
-import com.codealyst.omanprayertimes.ui.theme.IqamahDark
-import com.codealyst.omanprayertimes.ui.theme.IqamahLight
 
 @Composable
 fun PrayerTimeRow(
@@ -33,12 +28,9 @@ fun PrayerTimeRow(
     highlighted: Boolean = false,
     isAdhanNext: Boolean = false,
 ) {
-
-    val isDarkTheme = isSystemInDarkTheme()
-    val adhanColor = if (isDarkTheme) AdhanDark else AdhanLight
-    val iqamahColor = if (isDarkTheme) IqamahDark else IqamahLight
-
     val colorScheme = MaterialTheme.colorScheme;
+    val adhanColor = colorScheme.tertiary
+    val iqamahColor = colorScheme.primary
 
     val highlightColor = if (!highlighted) {
         Color.Transparent

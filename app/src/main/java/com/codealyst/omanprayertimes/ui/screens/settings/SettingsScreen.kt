@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,12 +13,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.CitiesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
+import com.codealyst.omanprayertimes.features.settings.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
 import com.codealyst.omanprayertimes.ui.components.SearchableDropdown
@@ -27,9 +31,14 @@ import com.codealyst.omanprayertimes.ui.components.SearchableDropdown
 fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
-    val citiesViewModel = hiltViewModel<CitiesViewModel>();
+    // Retrieve cities list
+    val citiesViewModel = hiltViewModel<CitiesViewModel>()
     val state = citiesViewModel.state.value
     val citiesList: List<City> = if (state is UiState.Success) state.data else emptyList();
+
+    // Get app settings
+    val settingsViewModel = hiltViewModel<SettingsViewModel>()
+    val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
 
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
@@ -49,9 +58,11 @@ fun SettingsScreen(
             SettingsGroup(title = "General") {
                 SettingsRow(title = "City") {
                     SearchableDropdown(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         options = citiesList.map { c -> DropdownOptions(c.cityName, c.cityId) },
-                        selectedValue = 0,
-                        onOptionSelected = { },
+                        selectedValue = settings.cityId,
+                        onOptionSelected = { cityId -> settingsViewModel.setCityId(cityId) },
                     )
                 }
 
@@ -64,8 +75,8 @@ fun SettingsScreen(
                             DropdownOptions("English", "en"),
                             DropdownOptions("Arabic", "ar"),
                         ),
-                        selectedValue = "",
-                        onOptionSelected = { },
+                        selectedValue = settings.language,
+                        onOptionSelected = { language -> settingsViewModel.setLanguage(language) },
                     )
                 }
 
@@ -78,8 +89,8 @@ fun SettingsScreen(
                             DropdownOptions("Light", "light"),
                             DropdownOptions("Dark", "dark")
                         ),
-                        selectedValue = "",
-                        onOptionSelected = { },
+                        selectedValue = settings.theme,
+                        onOptionSelected = { theme -> settingsViewModel.setTheme(theme) },
                     )
                 }
             }

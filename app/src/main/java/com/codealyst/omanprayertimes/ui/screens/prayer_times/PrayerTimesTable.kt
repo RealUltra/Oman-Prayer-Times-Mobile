@@ -21,8 +21,9 @@ import java.util.Locale
 fun PrayerTimesTable(
     prayerTimesViewModel: PrayerTimesViewModel,
     timerMetadata: TimerMetadata,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    // Get prayer times
     val state = prayerTimesViewModel.state.value
 
     val fajrTime = if (state is UiState.Success) convertTo12Hour(state.data.fajrTime) else "-"

@@ -8,11 +8,7 @@ plugins {
 
 android {
     namespace = "com.codealyst.omanprayertimes"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.codealyst.omanprayertimes"
@@ -78,4 +74,5 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.datastore.preferences)
 }

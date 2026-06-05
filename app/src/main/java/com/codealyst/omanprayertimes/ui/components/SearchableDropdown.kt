@@ -67,14 +67,18 @@ fun <T> SearchableDropdown(
             )
             .padding(horizontal = 2.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = selectedOption?.name ?: placeholder,
+                modifier = Modifier.weight(1f),
                 style = collapsedTextStyle,
                 color = contentColor
             )
 
-            Spacer(modifier = Modifier.width(6.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             DropdownArrow(color = contentColor)
         }

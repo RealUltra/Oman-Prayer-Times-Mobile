@@ -77,9 +77,3 @@ val OutlineVariantDark = Color(0xFF404943)
 val ScrimDark = Color(0xFF000000)
 val InverseSurfaceDark = Color(0xFFDEE4DE)
 val InverseOnSurfaceDark = Color(0xFF2C322E)
-
-val AdhanLight = Color(0xFFC2410C)
-val IqamahLight = MosqueGreenLight
-
-val AdhanDark = Color(0xFFFFB68A)
-val IqamahDark = MosqueGreenDark

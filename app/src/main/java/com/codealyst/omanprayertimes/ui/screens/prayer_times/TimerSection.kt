@@ -1,7 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,10 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
-import com.codealyst.omanprayertimes.ui.theme.AdhanDark
-import com.codealyst.omanprayertimes.ui.theme.AdhanLight
-import com.codealyst.omanprayertimes.ui.theme.IqamahDark
-import com.codealyst.omanprayertimes.ui.theme.IqamahLight
 import java.time.Duration
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -41,9 +36,9 @@ fun TimerSection(
     modifier: Modifier = Modifier,
     timerMetadata: TimerMetadata? = null,
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
-    val adhanColor = if (isDarkTheme) AdhanDark else AdhanLight
-    val iqamahColor = if (isDarkTheme) IqamahDark else IqamahLight
+    val colorScheme = MaterialTheme.colorScheme
+    val adhanColor = colorScheme.tertiary
+    val iqamahColor = colorScheme.primary
 
     val label: String;
     val labelColor = if (timerMetadata?.isAdhan ?: true) adhanColor else iqamahColor
@@ -56,7 +51,6 @@ fun TimerSection(
         label = "${timerMetadata.salahName}${suffix} in"
     }
 
-    val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography;
 
     val textureBitmap = ImageBitmap.imageResource(id = R.drawable.texture2);
