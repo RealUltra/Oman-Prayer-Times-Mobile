@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -60,12 +60,11 @@ fun <T> SearchableDropdown(
 
     Column(
         modifier = modifier
-            .width(IntrinsicSize.Min)
+            .width(IntrinsicSize.Max)
             .clickable(
                 enabled = enabled && options.isNotEmpty(),
                 onClick = { expanded = true }
             )
-            .padding(horizontal = 2.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
