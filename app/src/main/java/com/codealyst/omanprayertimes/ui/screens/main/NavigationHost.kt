@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.codealyst.omanprayertimes.ui.screens.iqamah_times.IqamahTimesScreen
+import com.codealyst.omanprayertimes.ui.screens.iqamah_config.IqamahConfigScreen
 import com.codealyst.omanprayertimes.ui.screens.prayer_times.PrayerTimesScreen
 import com.codealyst.omanprayertimes.ui.screens.settings.SettingsScreen
 
@@ -21,16 +21,16 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier = Modifi
         }
 
         composable(Destination.SETTINGS.route) {
-            SettingsScreen(navController = navController)
+            SettingsScreen(onConfigureIqamahTimes = { navController.navigate(SettingsRoute.IQAMAH_CONFIGS) })
         }
 
-        composable(SettingsRoute.IQAMAH_TIMES) {
-            IqamahTimesScreen()
+        composable(SettingsRoute.IQAMAH_CONFIGS) {
+            IqamahConfigScreen()
         }
     }
 }
 
 private object SettingsRoute {
-    const val IQAMAH_TIMES = "settings/iqamah_times"
+    const val IQAMAH_CONFIGS = "settings/iqamah_configs"
     const val REMINDERS = "settings/reminders"
 }

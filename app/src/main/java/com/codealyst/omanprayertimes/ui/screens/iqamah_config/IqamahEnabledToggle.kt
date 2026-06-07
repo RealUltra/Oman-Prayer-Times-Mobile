@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.iqamah_times
+package com.codealyst.omanprayertimes.ui.screens.iqamah_config
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -25,7 +25,8 @@ fun IqamahEnabledToggle(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        tonalElevation = 1.dp
+        tonalElevation = 2.dp,
+        shadowElevation = 1.dp
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),

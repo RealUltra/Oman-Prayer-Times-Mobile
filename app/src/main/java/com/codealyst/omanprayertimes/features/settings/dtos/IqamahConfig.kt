@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.features.settings.dtos
 
+import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -31,7 +32,25 @@ fun List<IqamahConfig>.get(prayerKey: String): IqamahConfig? {
 }
 
 fun List<IqamahConfig>.getIqamahTime(prayerKey: String, adhanTime: String?): String? {
-    return this.get(prayerKey)?.getIqamahTime(adhanTime)
+    return get(prayerKey)?.getIqamahTime(adhanTime)
+}
+
+fun List<IqamahConfig>.getIqamahTimes(prayerTimes: DailyPrayerTimes): DailyPrayerTimes {
+    val fajrIqamahTime = this.getIqamahTime(PrayerKeys.FAJR, prayerTimes.fajrTime)
+    val dhuhrIqamahTime = this.getIqamahTime(PrayerKeys.DHUHR, prayerTimes.dhuhrTime)
+    val asrIqamahTime = this.getIqamahTime(PrayerKeys.ASR, prayerTimes.asrTime)
+    val maghribIqamahTime = this.getIqamahTime(PrayerKeys.MAGHRIB, prayerTimes.maghribTime)
+    val ishaIqamahTime = this.getIqamahTime(PrayerKeys.ISHA, prayerTimes.ishaTime)
+
+    return DailyPrayerTimes(
+        date = prayerTimes.date,
+        fajrTime = fajrIqamahTime ?: "-",
+        sunriseTime = "-",
+        dhuhrTime = dhuhrIqamahTime ?: "-",
+        asrTime = asrIqamahTime ?: "-",
+        maghribTime = maghribIqamahTime ?: "-",
+        ishaTime = ishaIqamahTime ?: "-"
+    )
 }
 
 object IqamahMode {

@@ -1,11 +1,15 @@
 package com.codealyst.omanprayertimes.features.api.dtos
 
+import com.google.gson.annotations.SerializedName
+
 data class DailyPrayerTimes(
     val date: String,
     val fajrTime: String,
-    val shurooqTime: String,
+    @SerializedName("shurooqTime")
+    val sunriseTime: String,
     val dhuhrTime: String,
     val asrTime: String,
     val maghribTime: String,
-    val ishaaTime: String,
+    @SerializedName("ishaaTime")
+    val ishaTime: String,
 )

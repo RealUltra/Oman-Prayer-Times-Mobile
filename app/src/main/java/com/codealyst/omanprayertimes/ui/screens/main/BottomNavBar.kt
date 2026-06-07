@@ -8,27 +8,35 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navOptions
 import com.codealyst.omanprayertimes.R
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
-    var selectedDestination by rememberSaveable { mutableIntStateOf(Destination.PRAYER_TIMES.ordinal) }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
 
     NavigationBar(
         windowInsets = NavigationBarDefaults.windowInsets,
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        Destination.entries.forEachIndexed { index, destination ->
+        Destination.entries.forEach { destination ->
             NavigationBarItem(
-                selected = selectedDestination == index,
+                selected = currentRoute.isInDestination(destination),
                 onClick = {
-                    navController.navigate(route = destination.route)
-                    selectedDestination = index
+                    navController.navigate(
+                        route = destination.route,
+                        navOptions = navOptions {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    )
                 },
                 icon = {
                     Icon(
@@ -50,4 +58,8 @@ enum class Destination(
 ) {
     PRAYER_TIMES("prayer_times", "Prayer Times", R.drawable.ic_mosque, "Prayer Times"),
     SETTINGS("settings", "Settings", R.drawable.ic_settings, "Settings")
+}
+
+private fun String?.isInDestination(destination: Destination): Boolean {
+    return this == destination.route || this?.startsWith("${destination.route}/") == true
 }

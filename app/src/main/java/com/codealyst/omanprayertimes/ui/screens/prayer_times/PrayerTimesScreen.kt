@@ -15,6 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
+import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTimes
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -39,7 +40,15 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+
+    // Get iqamah times
     val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
+    val iqamahTimes =
+        if (settings.iqamahTimesEnabled && prayerTimes != null) {
+            iqamahConfigs.getIqamahTimes(prayerTimes)
+        } else {
+            null
+        }
 
     // Every time a date is selected, fetch prayer times.
     LaunchedEffect(tableDate, settings.cityId) {
@@ -59,23 +68,27 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    // Prepare the timer metadata based on current values of the prayer times and the time.
-    val timerMetadata = getTimerMetadata(now, prayerTimesViewModel.state.value)
+    // Retrieve the next event based on prayer times and the current time.
+    val nextEvent =
+        if (prayerTimes != null) {
+            getNextEvent(now, prayerTimes, prayerTimes, iqamahTimes)
+        } else {
+            null
+        }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         DateTimeSection(now = now)
 
-        TimerSection(
-            timerMetadata = timerMetadata
-        )
+        NextEventTimer(nextEvent = nextEvent)
 
         PrayerTimesTable(
             prayerTimes,
-            if (settings.iqamahTimesEnabled) iqamahConfigs else emptyList(),
-            timerMetadata ?: TimerMetadata("", false, 0),
+            iqamahTimes,
+            nextEvent ?: EventInfo(),
+            tableDate,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),

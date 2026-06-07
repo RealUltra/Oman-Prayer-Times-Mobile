@@ -1,14 +1,17 @@
-package com.codealyst.omanprayertimes.ui.screens.iqamah_times
+package com.codealyst.omanprayertimes.ui.screens.iqamah_config
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
@@ -135,11 +139,12 @@ private fun MinutesAfterAdhanInput(
     onValueChange: (String) -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val fonts = MaterialTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedTextField(
             value = value,
@@ -148,15 +153,26 @@ private fun MinutesAfterAdhanInput(
                     onValueChange(text)
                 }
             },
-            modifier = Modifier.width(112.dp),
+            modifier = Modifier
+                .width(104.dp)
+                .heightIn(min = 56.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            suffix = { Text("min") }
+            textStyle = fonts.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            shape = RoundedCornerShape(10.dp),
+            colors = compactTextFieldColors(),
+            suffix = {
+                Text(
+                    "min",
+                    style = fonts.labelLarge,
+                    color = colorScheme.onSurfaceVariant
+                )
+            }
         )
 
         Text(
-            "after adhan",
-            style = MaterialTheme.typography.bodyMedium,
+            "minutes after adhan",
+            style = fonts.bodyMedium,
             color = colorScheme.onSurfaceVariant
         )
     }
@@ -171,10 +187,13 @@ private fun ExactTimeInput(
     onMinuteChange: (String) -> Unit,
     onPeriodChange: (String) -> Unit
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val fonts = MaterialTheme.typography
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedTextField(
             value = hour,
@@ -183,13 +202,22 @@ private fun ExactTimeInput(
                     onHourChange(text)
                 }
             },
-            modifier = Modifier.width(58.dp),
+            modifier = Modifier
+                .width(64.dp)
+                .heightIn(min = 56.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            textStyle = fonts.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            shape = RoundedCornerShape(10.dp),
+            colors = compactTextFieldColors(),
             placeholder = { Text("7") }
         )
 
-        Text(":")
+        Text(
+            ":",
+            style = fonts.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+            color = colorScheme.onSurfaceVariant
+        )
 
         OutlinedTextField(
             value = minute,
@@ -198,9 +226,14 @@ private fun ExactTimeInput(
                     onMinuteChange(text)
                 }
             },
-            modifier = Modifier.width(58.dp),
+            modifier = Modifier
+                .width(64.dp)
+                .heightIn(min = 56.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            textStyle = fonts.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            shape = RoundedCornerShape(10.dp),
+            colors = compactTextFieldColors(),
             placeholder = { Text("15") }
         )
 
@@ -210,8 +243,18 @@ private fun ExactTimeInput(
                 SegmentedControlOption("PM", "PM")
             ),
             selectedValue = period,
-            modifier = Modifier.widthIn(min = 112.dp),
+            modifier = Modifier.widthIn(min = 124.dp),
+            labelStyle = fonts.bodyMedium,
             onOptionSelected = onPeriodChange
         )
     }
 }
+
+@Composable
+private fun compactTextFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    cursorColor = MaterialTheme.colorScheme.primary
+)

@@ -1,10 +1,12 @@
-package com.codealyst.omanprayertimes.ui.screens.iqamah_times
+package com.codealyst.omanprayertimes.ui.screens.iqamah_config
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +28,7 @@ import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
 
 @Composable
-fun IqamahPrayerCard(
+fun IqamahConfigCard(
     prayerKey: String,
     initialMode: String,
     initialMinutesAfterAdhan: String,
@@ -62,11 +64,13 @@ fun IqamahPrayerCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         color = colorScheme.surfaceContainer,
-        tonalElevation = 1.dp
+        tonalElevation = 2.dp,
+        shadowElevation = 1.dp,
+        border = BorderStroke(1.dp, colorScheme.outlineVariant.copy(alpha = 0.65f))
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -76,18 +80,20 @@ fun IqamahPrayerCard(
             ) {
                 Text(
                     prayerName,
-                    style = fonts.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    style = fonts.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = colorScheme.onSurface
                 )
 
                 Dropdown(
+                    modifier = Modifier.widthIn(min = 118.dp),
                     options = listOf(
                         DropdownOptions("After adhan", IqamahMode.AFTER_ADHAN),
                         DropdownOptions("Exact time", IqamahMode.EXACT_TIME)
                     ),
                     selectedValue = mode,
-                    collapsedTextStyle = fonts.bodyMedium,
+                    collapsedTextStyle = fonts.labelLarge,
                     expandedTextStyle = fonts.bodyMedium,
+                    collapsedTextColor = colorScheme.primary,
                     onOptionSelected = {
                         mode = it
                         emitConfig(nextMode = it)
@@ -95,12 +101,12 @@ fun IqamahPrayerCard(
                 )
             }
 
-            HorizontalDivider(color = colorScheme.outlineVariant)
+            HorizontalDivider(color = colorScheme.outlineVariant.copy(alpha = 0.55f))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 TimeSelector(
                     mode = mode,
