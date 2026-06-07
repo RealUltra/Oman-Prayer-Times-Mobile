@@ -21,7 +21,7 @@ import com.codealyst.omanprayertimes.ui.components.TiledBox
 @Composable
 fun PrayerTimeRow(
     name: String,
-    startTime: String,
+    adhanTime: String,
     iqamahTime: String,
     modifier: Modifier = Modifier,
     isHeader: Boolean = false,
@@ -70,7 +70,7 @@ fun PrayerTimeRow(
             )
 
             Text(
-                text = startTime,
+                text = adhanTime,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,

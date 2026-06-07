@@ -128,11 +128,11 @@ class PrayerTimesRepository @Inject constructor(
                     cityId = cityId,
                     date = dailyPrayerTimes.value.date,
                     fajr = dailyPrayerTimes.value.fajrTime,
-                    sunrise = dailyPrayerTimes.value.shurooqTime,
+                    sunrise = dailyPrayerTimes.value.sunriseTime,
                     dhuhr = dailyPrayerTimes.value.dhuhrTime,
                     asr = dailyPrayerTimes.value.asrTime,
                     maghrib = dailyPrayerTimes.value.maghribTime,
-                    isha = dailyPrayerTimes.value.ishaaTime
+                    isha = dailyPrayerTimes.value.ishaTime
                 )
             }
         )

@@ -11,34 +11,46 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
+import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
 fun PrayerTimesTable(
-    prayerTimesViewModel: PrayerTimesViewModel,
-    timerMetadata: TimerMetadata,
+    prayerTimes: DailyPrayerTimes?,
+    iqamahTimes: DailyPrayerTimes?,
+    nextEvent: EventInfo,
+    tableDate: String,
     modifier: Modifier = Modifier,
 ) {
-    // Get prayer times
-    val state = prayerTimesViewModel.state.value
+    val fajrTime = prayerTimes?.fajrTime.toDisplayTime()
+    val sunriseTime = prayerTimes?.sunriseTime.toDisplayTime()
+    val dhuhrTime = prayerTimes?.dhuhrTime.toDisplayTime()
+    val asrTime = prayerTimes?.asrTime.toDisplayTime()
+    val maghribTime = prayerTimes?.maghribTime.toDisplayTime()
+    val ishaTime = prayerTimes?.ishaTime.toDisplayTime()
 
-    val fajrTime = if (state is UiState.Success) convertTo12Hour(state.data.fajrTime) else "-"
-    val shurooqTime = if (state is UiState.Success) convertTo12Hour(state.data.shurooqTime) else "-"
-    val dhuhrTime = if (state is UiState.Success) convertTo12Hour(state.data.dhuhrTime) else "-"
-    val asrTime = if (state is UiState.Success) convertTo12Hour(state.data.asrTime) else "-"
-    val maghribTime = if (state is UiState.Success) convertTo12Hour(state.data.maghribTime) else "-"
-    val ishaaTime = if (state is UiState.Success) convertTo12Hour(state.data.ishaaTime) else "-"
+    val fajrIqamahTime = iqamahTimes?.fajrTime.toDisplayTime()
+    val dhuhrIqamahTime = iqamahTimes?.dhuhrTime.toDisplayTime()
+    val asrIqamahTime = iqamahTimes?.asrTime.toDisplayTime()
+    val maghribIqamahTime = iqamahTimes?.maghribTime.toDisplayTime()
+    val ishaIqamahTime = iqamahTimes?.ishaTime.toDisplayTime()
+
+    val dateMatches = nextEvent.date == tableDate
+
+    val prayerRowsInfo = listOf(
+        Triple("Fajr", fajrTime, fajrIqamahTime),
+        Triple("Shurooq", sunriseTime, "-"),
+        Triple("Dhuhr", dhuhrTime, dhuhrIqamahTime),
+        Triple("Asr", asrTime, asrIqamahTime),
+        Triple("Maghrib", maghribTime, maghribIqamahTime),
+        Triple("Isha'a", ishaTime, ishaIqamahTime),
+    )
 
     val colorScheme = MaterialTheme.colorScheme;
 
-    Column(
-        modifier
-
-    ) {
+    Column(modifier) {
         PrayerTimeRow("Salah", "Adhan", "Iqamah", isHeader = true)
         HorizontalDivider(color = colorScheme.outlineVariant, thickness = 2.dp)
         Spacer(Modifier.height(4.dp))
@@ -48,58 +60,29 @@ fun PrayerTimesTable(
                 .padding(bottom = 8.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            PrayerTimeRow(
-                "Fajr",
-                fajrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Fajr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Shurooq",
-                shurooqTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Shurooq"),
-                isAdhanNext = true
-            )
-            PrayerTimeRow(
-                "Dhuhr",
-                dhuhrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Dhuhr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Asr",
-                asrTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Asr"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Maghrib",
-                maghribTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Maghrib"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
-            PrayerTimeRow(
-                "Isha'a",
-                ishaaTime,
-                "-",
-                highlighted = (timerMetadata.salahName == "Isha'a"),
-                isAdhanNext = timerMetadata.isAdhan ?: false
-            )
+            for ((salahName, adhanTime, iqamahTime) in prayerRowsInfo) {
+                PrayerTimeRow(
+                    salahName,
+                    adhanTime,
+                    iqamahTime,
+                    highlighted = (nextEvent.salahName == salahName && dateMatches),
+                    isAdhanNext = nextEvent.isAdhan
+                )
+            }
         }
     }
 }
 
-fun convertTo12Hour(time: String): String {
+private fun String?.toDisplayTime(): String {
+    return this?.to12HourTime() ?: "-"
+}
+
+fun String.to12HourTime(): String {
     return try {
         LocalTime
-            .parse(time, DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH))
+            .parse(this, DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH))
             .format(DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH))
     } catch (_: Exception) {
-        time
+        this
     }
 }

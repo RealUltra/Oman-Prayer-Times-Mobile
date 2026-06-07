@@ -31,10 +31,10 @@ fun DailyPrayerTimesEntity.toDto(displayDate: String = this.date): DailyPrayerTi
     return DailyPrayerTimes(
         date = displayDate,
         fajrTime = this.fajr,
-        shurooqTime = this.sunrise,
+        sunriseTime = this.sunrise,
         dhuhrTime = this.dhuhr,
         asrTime = this.asr,
         maghribTime = this.maghrib,
-        ishaaTime = this.isha
+        ishaTime = this.isha
     )
 }

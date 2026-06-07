@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.ui.screens.settings
+package com.codealyst.omanprayertimes.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,15 +8,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
-import com.codealyst.omanprayertimes.ui.components.TiledBox
 
 @Composable
-fun Header(modifier: Modifier = Modifier) {
+fun ScreenHeader(
+    title: String,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.displaySmall
+) {
     val colorScheme = MaterialTheme.colorScheme
-    val fonts = MaterialTheme.typography
 
     TiledBox(
         modifier = modifier
@@ -27,9 +30,9 @@ fun Header(modifier: Modifier = Modifier) {
         offset = Offset(0.0f, -100f)
     ) {
         Text(
-            "Settings",
+            title,
             modifier = Modifier.padding(bottom = 16.dp, top = 64.dp, start = 20.dp),
-            style = fonts.displaySmall.copy(fontWeight = FontWeight.Bold),
+            style = textStyle.copy(fontWeight = FontWeight.Bold),
         )
     }
 }

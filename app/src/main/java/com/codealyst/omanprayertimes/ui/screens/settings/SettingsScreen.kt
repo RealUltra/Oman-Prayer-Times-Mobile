@@ -1,6 +1,7 @@
 package com.codealyst.omanprayertimes.ui.screens.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,18 +18,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codealyst.omanprayertimes.BuildConfig
 import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.CitiesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
-import com.codealyst.omanprayertimes.features.settings.SettingsViewModel
+import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
+import com.codealyst.omanprayertimes.ui.components.ScreenHeader
 import com.codealyst.omanprayertimes.ui.components.SearchableDropdown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onConfigureIqamahTimes: () -> Unit
 ) {
     // Retrieve cities list
     val citiesViewModel = hiltViewModel<CitiesViewModel>()
@@ -48,7 +52,7 @@ fun SettingsScreen(
             .background(colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
-        Header()
+        ScreenHeader(title = "Settings")
 
         Column(
             modifier = Modifier.padding(20.dp),
@@ -98,6 +102,10 @@ fun SettingsScreen(
                         "Configure",
                         style = fonts.bodyMedium,
                         color = colorScheme.primary,
+                        modifier = Modifier.clickable(
+                            enabled = true,
+                            onClick = onConfigureIqamahTimes
+                        )
                     )
                 }
 
@@ -105,9 +113,9 @@ fun SettingsScreen(
 
                 SettingsRow(title = "Reminders") {
                     Text(
-                        "Configure",
+                        "Coming Soon",
                         style = fonts.bodyMedium,
-                        color = colorScheme.primary,
+                        color = colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -115,7 +123,9 @@ fun SettingsScreen(
             SettingsGroup(title = "About") {
                 SettingsRow(title = "Version") {
                     Text(
-                        "v25.06.1", style = fonts.bodyMedium, color = colorScheme.onSurfaceVariant
+                        "v${BuildConfig.VERSION_NAME}",
+                        style = fonts.bodyMedium,
+                        color = colorScheme.onSurfaceVariant
                     )
                 }
             }
