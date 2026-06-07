@@ -4,5 +4,5 @@ data class AppSettings(
     val cityId: Int = 0,
     val language: String = "",
     val theme: String = "",
-    val iqamahSettings: String = "[]"
+    val iqamahTimesEnabled: Boolean = false
 )

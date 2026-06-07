@@ -19,23 +19,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.codealyst.omanprayertimes.features.settings.IqamahMode
+import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
 import com.codealyst.omanprayertimes.ui.components.SegmentedControl
 import com.codealyst.omanprayertimes.ui.components.SegmentedControlOption
 
 @Composable
 fun TimeSelector(
     mode: String,
-    initialMinutesAfterAdhan: String,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    minutesAfterAdhan: String,
+    exactTime: String,
+    onMinutesAfterAdhanChange: (String) -> Unit,
+    onExactTimeChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var minutesAfterAdhan by remember(initialMinutesAfterAdhan) {
-        mutableStateOf(initialMinutesAfterAdhan.filter { it.isDigit() })
+    val initialExactTimeParts = remember(exactTime) {
+        parseInitialExactTime(exactTime)
     }
-    var exactHour by remember { mutableStateOf("7") }
-    var exactMinute by remember { mutableStateOf("15") }
-    var exactPeriod by remember { mutableStateOf("PM") }
+    var exactHour by remember(exactTime) {
+        mutableStateOf(initialExactTimeParts.hour)
+    }
+    var exactMinute by remember(exactTime) {
+        mutableStateOf(initialExactTimeParts.minute)
+    }
+    var exactPeriod by remember(exactTime) {
+        mutableStateOf(initialExactTimeParts.period)
+    }
+
+    fun updateExactTime(
+        nextHour: String = exactHour,
+        nextMinute: String = exactMinute,
+        nextPeriod: String = exactPeriod
+    ) {
+        toTwentyFourHourTime(nextHour, nextMinute, nextPeriod)?.let(onExactTimeChange)
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -44,27 +60,78 @@ fun TimeSelector(
         if (mode == IqamahMode.AFTER_ADHAN) {
             MinutesAfterAdhanInput(
                 value = minutesAfterAdhan,
-                enabled = enabled,
-                onValueChange = { minutesAfterAdhan = it }
+                onValueChange = onMinutesAfterAdhanChange
             )
         } else {
             ExactTimeInput(
                 hour = exactHour,
                 minute = exactMinute,
                 period = exactPeriod,
-                enabled = enabled,
-                onHourChange = { exactHour = it },
-                onMinuteChange = { exactMinute = it },
-                onPeriodChange = { exactPeriod = it }
+                onHourChange = {
+                    exactHour = it
+                    updateExactTime(nextHour = it)
+                },
+                onMinuteChange = {
+                    exactMinute = it
+                    updateExactTime(nextMinute = it)
+                },
+                onPeriodChange = {
+                    exactPeriod = it
+                    updateExactTime(nextPeriod = it)
+                }
             )
         }
     }
 }
 
+private data class ExactTimeParts(
+    val hour: String,
+    val minute: String,
+    val period: String
+)
+
+private fun parseInitialExactTime(initialExactTime: String): ExactTimeParts {
+    val parts = initialExactTime.split(":")
+    val hour = parts.getOrNull(0)?.toIntOrNull()
+    val minute = parts.getOrNull(1)?.toIntOrNull()
+
+    if (hour == null || minute == null || hour !in 0..23 || minute !in 0..59) {
+        return ExactTimeParts(hour = "7", minute = "15", period = "PM")
+    }
+
+    val hour12 = when (val value = hour % 12) {
+        0 -> 12
+        else -> value
+    }
+    val period = if (hour < 12) "AM" else "PM"
+
+    return ExactTimeParts(
+        hour = hour12.toString(),
+        minute = minute.toString().padStart(2, '0'),
+        period = period
+    )
+}
+
+private fun toTwentyFourHourTime(hourText: String, minuteText: String, period: String): String? {
+    val hour = hourText.toIntOrNull()
+    val minute = minuteText.toIntOrNull()
+
+    if (hour == null || minute == null || hour !in 1..12 || minute !in 0..59) {
+        return null
+    }
+
+    val hour24 = when (period) {
+        "AM" -> if (hour == 12) 0 else hour
+        "PM" -> if (hour == 12) 12 else hour + 12
+        else -> return null
+    }
+
+    return "${hour24.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
+}
+
 @Composable
 private fun MinutesAfterAdhanInput(
     value: String,
-    enabled: Boolean,
     onValueChange: (String) -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -82,7 +149,6 @@ private fun MinutesAfterAdhanInput(
                 }
             },
             modifier = Modifier.width(112.dp),
-            enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             suffix = { Text("min") }
@@ -101,7 +167,6 @@ private fun ExactTimeInput(
     hour: String,
     minute: String,
     period: String,
-    enabled: Boolean,
     onHourChange: (String) -> Unit,
     onMinuteChange: (String) -> Unit,
     onPeriodChange: (String) -> Unit
@@ -119,7 +184,6 @@ private fun ExactTimeInput(
                 }
             },
             modifier = Modifier.width(58.dp),
-            enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             placeholder = { Text("7") }
@@ -135,7 +199,6 @@ private fun ExactTimeInput(
                 }
             },
             modifier = Modifier.width(58.dp),
-            enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             placeholder = { Text("15") }
@@ -148,7 +211,6 @@ private fun ExactTimeInput(
             ),
             selectedValue = period,
             modifier = Modifier.widthIn(min = 112.dp),
-            enabled = enabled,
             onOptionSelected = onPeriodChange
         )
     }

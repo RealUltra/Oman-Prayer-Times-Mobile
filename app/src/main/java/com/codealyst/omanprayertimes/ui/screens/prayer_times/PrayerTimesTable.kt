@@ -11,39 +11,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
-import com.codealyst.omanprayertimes.features.settings.IqamahSetting
-import com.codealyst.omanprayertimes.features.settings.PrayerKeys
-import com.codealyst.omanprayertimes.features.settings.get
-import com.codealyst.omanprayertimes.features.settings.getIqamahTime
+import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
+import com.codealyst.omanprayertimes.features.settings.dtos.IqamahConfig
+import com.codealyst.omanprayertimes.features.settings.dtos.PrayerKeys
+import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
 fun PrayerTimesTable(
-    prayerTimesViewModel: PrayerTimesViewModel,
-    iqamahSettings: List<IqamahSetting>,
+    prayerTimes: DailyPrayerTimes?,
+    iqamahConfigs: List<IqamahConfig>,
     timerMetadata: TimerMetadata,
     modifier: Modifier = Modifier,
 ) {
-    // Get prayer times
-    val state = prayerTimesViewModel.state.value
+    val fajrTime = prayerTimes?.fajrTime.toDisplayTime()
+    val shurooqTime = prayerTimes?.shurooqTime.toDisplayTime()
+    val dhuhrTime = prayerTimes?.dhuhrTime.toDisplayTime()
+    val asrTime = prayerTimes?.asrTime.toDisplayTime()
+    val maghribTime = prayerTimes?.maghribTime.toDisplayTime()
+    val ishaTime = prayerTimes?.ishaaTime.toDisplayTime()
 
-    val fajrTime = if (state is UiState.Success) convertTo12Hour(state.data.fajrTime) else "-"
-    val shurooqTime = if (state is UiState.Success) convertTo12Hour(state.data.shurooqTime) else "-"
-    val dhuhrTime = if (state is UiState.Success) convertTo12Hour(state.data.dhuhrTime) else "-"
-    val asrTime = if (state is UiState.Success) convertTo12Hour(state.data.asrTime) else "-"
-    val maghribTime = if (state is UiState.Success) convertTo12Hour(state.data.maghribTime) else "-"
-    val ishaTime = if (state is UiState.Success) convertTo12Hour(state.data.ishaaTime) else "-"
-
-    val fajrIqamahTime = iqamahSettings.get(PrayerKeys.FAJR)?.getIqamahTime(fajrTime) ?: "-"
-    val dhuhrIqamahTime = iqamahSettings.get(PrayerKeys.DHUHR)?.getIqamahTime(dhuhrTime) ?: "-"
-    val asrIqamahTime = iqamahSettings.get(PrayerKeys.ASR)?.getIqamahTime(asrTime) ?: "-"
-    val maghribIqamahTime =
-        iqamahSettings.get(PrayerKeys.MAGHRIB)?.getIqamahTime(maghribTime) ?: "-"
-    val ishaIqamahTime = iqamahSettings.get(PrayerKeys.ISHA)?.getIqamahTime(ishaTime) ?: "-"
+    val fajrIqamahTime = iqamahConfigs.getIqamahDisplayTime(PrayerKeys.FAJR, prayerTimes)
+    val dhuhrIqamahTime = iqamahConfigs.getIqamahDisplayTime(PrayerKeys.DHUHR, prayerTimes)
+    val asrIqamahTime = iqamahConfigs.getIqamahDisplayTime(PrayerKeys.ASR, prayerTimes)
+    val maghribIqamahTime = iqamahConfigs.getIqamahDisplayTime(PrayerKeys.MAGHRIB, prayerTimes)
+    val ishaIqamahTime = iqamahConfigs.getIqamahDisplayTime(PrayerKeys.ISHA, prayerTimes)
 
     val colorScheme = MaterialTheme.colorScheme;
 
@@ -106,12 +100,32 @@ fun PrayerTimesTable(
     }
 }
 
-fun convertTo12Hour(time: String): String {
+private fun String?.toDisplayTime(): String {
+    return this?.to12HourTime() ?: "-"
+}
+
+private fun List<IqamahConfig>.getIqamahDisplayTime(
+    prayerKey: String,
+    prayerTimes: DailyPrayerTimes?
+): String {
+    val adhanTime = when (prayerKey) {
+        PrayerKeys.FAJR -> prayerTimes?.fajrTime
+        PrayerKeys.DHUHR -> prayerTimes?.dhuhrTime
+        PrayerKeys.ASR -> prayerTimes?.asrTime
+        PrayerKeys.MAGHRIB -> prayerTimes?.maghribTime
+        PrayerKeys.ISHA -> prayerTimes?.ishaaTime
+        else -> null
+    }
+
+    return getIqamahTime(prayerKey, adhanTime).toDisplayTime()
+}
+
+fun String.to12HourTime(): String {
     return try {
         LocalTime
-            .parse(time, DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH))
+            .parse(this, DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH))
             .format(DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH))
     } catch (_: Exception) {
-        time
+        this
     }
 }

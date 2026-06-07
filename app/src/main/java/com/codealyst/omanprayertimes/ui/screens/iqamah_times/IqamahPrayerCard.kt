@@ -17,24 +17,46 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.codealyst.omanprayertimes.features.settings.IqamahMode
+import com.codealyst.omanprayertimes.features.settings.dtos.IqamahConfig
+import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
+import com.codealyst.omanprayertimes.features.settings.dtos.PrayerKeys
 import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
 
 @Composable
 fun IqamahPrayerCard(
-    prayerName: String,
+    prayerKey: String,
+    initialMode: String,
     initialMinutesAfterAdhan: String,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    initialExactTime: String,
+    onChanged: (IqamahConfig) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
-    var mode by remember { mutableStateOf(IqamahMode.AFTER_ADHAN) }
-    val contentAlpha = if (enabled) 1f else 0.54f
+    val prayerName = prayerKey.toPrayerName()
+    var mode by remember(initialMode) { mutableStateOf(initialMode) }
+    var minutesAfterAdhan by remember(initialMinutesAfterAdhan) {
+        mutableStateOf(initialMinutesAfterAdhan.filter { it.isDigit() })
+    }
+    var exactTime by remember(initialExactTime) { mutableStateOf(initialExactTime) }
+
+    fun emitConfig(
+        nextMode: String = mode,
+        nextMinutesAfterAdhan: String = minutesAfterAdhan,
+        nextExactTime: String = exactTime
+    ) {
+        onChanged(
+            IqamahConfig(
+                prayerKey = prayerKey,
+                mode = nextMode,
+                minutesAfterAdhan = nextMinutesAfterAdhan.toIntOrNull(),
+                exactTime = nextExactTime
+            )
+        )
+    }
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -48,8 +70,7 @@ fun IqamahPrayerCard(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(contentAlpha),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -65,10 +86,12 @@ fun IqamahPrayerCard(
                         DropdownOptions("Exact time", IqamahMode.EXACT_TIME)
                     ),
                     selectedValue = mode,
-                    enabled = enabled,
                     collapsedTextStyle = fonts.bodyMedium,
                     expandedTextStyle = fonts.bodyMedium,
-                    onOptionSelected = { mode = it }
+                    onOptionSelected = {
+                        mode = it
+                        emitConfig(nextMode = it)
+                    }
                 )
             }
 
@@ -76,16 +99,34 @@ fun IqamahPrayerCard(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(contentAlpha),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TimeSelector(
                     mode = mode,
-                    initialMinutesAfterAdhan = initialMinutesAfterAdhan,
-                    enabled = enabled
+                    minutesAfterAdhan = minutesAfterAdhan,
+                    exactTime = exactTime,
+                    onMinutesAfterAdhanChange = {
+                        minutesAfterAdhan = it
+                        emitConfig(nextMinutesAfterAdhan = it)
+                    },
+                    onExactTimeChange = {
+                        exactTime = it
+                        emitConfig(nextExactTime = it)
+                    }
                 )
             }
         }
+    }
+}
+
+private fun String.toPrayerName(): String {
+    return when (this) {
+        PrayerKeys.FAJR -> "Fajr"
+        PrayerKeys.DHUHR -> "Dhuhr"
+        PrayerKeys.ASR -> "Asr"
+        PrayerKeys.MAGHRIB -> "Maghrib"
+        PrayerKeys.ISHA -> "Isha'a"
+        else -> this
     }
 }

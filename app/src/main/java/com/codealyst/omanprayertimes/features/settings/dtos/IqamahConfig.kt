@@ -1,29 +1,17 @@
-package com.codealyst.omanprayertimes.features.settings
+package com.codealyst.omanprayertimes.features.settings.dtos
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-private val gson = Gson()
 
-data class IqamahSetting(
+data class IqamahConfig(
     val prayerKey: String,
     val mode: String,
     val minutesAfterAdhan: Int?,
     val exactTime: String?
 )
 
-fun List<IqamahSetting>.toJson(): String {
-    return gson.toJson(this);
-}
-
-fun String.toIqamahSettings(): List<IqamahSetting> {
-    val type = object : TypeToken<List<IqamahSetting>>() {}.type
-    return gson.fromJson(this, type)
-}
-
-fun IqamahSetting.getIqamahTime(adhanTime: String?): String? {
+fun IqamahConfig.getIqamahTime(adhanTime: String?): String? {
     if (mode == IqamahMode.EXACT_TIME) {
         return exactTime
     }
@@ -38,13 +26,12 @@ fun IqamahSetting.getIqamahTime(adhanTime: String?): String? {
     return null
 }
 
-fun List<IqamahSetting>.get(prayerKey: String): IqamahSetting? {
-    for (iqamahSetting in this) {
-        if (iqamahSetting.prayerKey == prayerKey) {
-            return iqamahSetting;
-        }
-    }
-    return null;
+fun List<IqamahConfig>.get(prayerKey: String): IqamahConfig? {
+    return this.firstOrNull { config -> config.prayerKey == prayerKey }
+}
+
+fun List<IqamahConfig>.getIqamahTime(prayerKey: String, adhanTime: String?): String? {
+    return this.get(prayerKey)?.getIqamahTime(adhanTime)
 }
 
 object IqamahMode {

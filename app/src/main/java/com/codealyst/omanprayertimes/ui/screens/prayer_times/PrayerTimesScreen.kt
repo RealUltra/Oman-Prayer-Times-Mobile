@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.settings.toIqamahSettings
+import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -31,12 +31,15 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         mutableStateOf(LocalDate.now(omanZone).toString())
     }
 
-    // Get prayer times view model
+    // Get prayer times
     val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
+    val prayerTimesState = prayerTimesViewModel.state.value;
+    val prayerTimes = if (prayerTimesState is UiState.Success) prayerTimesState.data else null;
 
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+    val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
 
     // Every time a date is selected, fetch prayer times.
     LaunchedEffect(tableDate, settings.cityId) {
@@ -70,8 +73,8 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         )
 
         PrayerTimesTable(
-            prayerTimesViewModel,
-            settings.iqamahSettings.toIqamahSettings(),
+            prayerTimes,
+            if (settings.iqamahTimesEnabled) iqamahConfigs else emptyList(),
             timerMetadata ?: TimerMetadata("", false, 0),
             modifier = Modifier
                 .weight(1f)

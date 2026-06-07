@@ -2,9 +2,12 @@ package com.codealyst.omanprayertimes.features.database
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
 import com.codealyst.omanprayertimes.features.database.daos.CityDao
 import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
+import com.codealyst.omanprayertimes.features.database.daos.IqamahConfigDao
 import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
 import dagger.Module
 import dagger.Provides
@@ -23,7 +26,9 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "app_database.db"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Singleton
@@ -46,4 +51,23 @@ object DatabaseModule {
     fun provideCityDao(appDatabase: AppDatabase): CityDao =
         appDatabase.getCityDao()
 
+    @Singleton
+    @Provides
+    fun provideIqamahConfigDao(appDatabase: AppDatabase): IqamahConfigDao =
+        appDatabase.getIqamahConfigDao()
+
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS iqamah_configs (
+                    prayerKey TEXT NOT NULL PRIMARY KEY,
+                    mode TEXT NOT NULL,
+                    minutesAfterAdhan INTEGER,
+                    exactTime TEXT
+                )
+                """.trimIndent()
+            )
+        }
+    }
 }
