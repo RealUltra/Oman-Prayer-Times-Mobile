@@ -57,11 +57,12 @@ fun getNextEvent(
         }
     }
 
-    val nextEventDate = now.toLocalDate();
+    var nextEventDate = now.toLocalDate();
 
     if (nextEventTime == null) {
+        println("[getNextEvent] nextEventTime is null. Setting to tomorrow's fajr.")
         nextEventTime = tomorrowPrayerTimes.fajrTime.toLocalTime()
-        nextEventDate.plusDays(1)
+        nextEventDate = nextEventDate.plusDays(1)
     }
 
     val nextEventDateTime = nextEventDate.atTime(nextEventTime).atZone(now.zone)
