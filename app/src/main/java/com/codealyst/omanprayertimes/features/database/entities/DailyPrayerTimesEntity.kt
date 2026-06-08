@@ -2,7 +2,6 @@ package com.codealyst.omanprayertimes.features.database.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 
 @Entity(
     tableName = "daily_prayer_times", primaryKeys = ["date", "cityId"], foreignKeys = [
@@ -26,15 +25,3 @@ data class DailyPrayerTimesEntity(
     val maghrib: String,
     val isha: String
 )
-
-fun DailyPrayerTimesEntity.toDto(displayDate: String = this.date): DailyPrayerTimes {
-    return DailyPrayerTimes(
-        date = displayDate,
-        fajrTime = this.fajr,
-        sunriseTime = this.sunrise,
-        dhuhrTime = this.dhuhr,
-        asrTime = this.asr,
-        maghribTime = this.maghrib,
-        ishaTime = this.isha
-    )
-}

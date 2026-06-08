@@ -1,12 +1,13 @@
 package com.codealyst.omanprayertimes.features.settings.dtos
 
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
+import com.codealyst.omanprayertimes.features.prayer_times.PrayerKey
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
 data class IqamahConfig(
-    val prayerKey: String,
+    val prayerKey: PrayerKey,
     val mode: String,
     val minutesAfterAdhan: Int?,
     val exactTime: String?
@@ -27,20 +28,20 @@ fun IqamahConfig.getIqamahTime(adhanTime: String?): String? {
     return null
 }
 
-fun List<IqamahConfig>.get(prayerKey: String): IqamahConfig? {
+fun List<IqamahConfig>.get(prayerKey: PrayerKey): IqamahConfig? {
     return this.firstOrNull { config -> config.prayerKey == prayerKey }
 }
 
-fun List<IqamahConfig>.getIqamahTime(prayerKey: String, adhanTime: String?): String? {
+fun List<IqamahConfig>.getIqamahTime(prayerKey: PrayerKey, adhanTime: String?): String? {
     return get(prayerKey)?.getIqamahTime(adhanTime)
 }
 
 fun List<IqamahConfig>.getIqamahTimes(prayerTimes: DailyPrayerTimes): DailyPrayerTimes {
-    val fajrIqamahTime = this.getIqamahTime(PrayerKeys.FAJR, prayerTimes.fajrTime)
-    val dhuhrIqamahTime = this.getIqamahTime(PrayerKeys.DHUHR, prayerTimes.dhuhrTime)
-    val asrIqamahTime = this.getIqamahTime(PrayerKeys.ASR, prayerTimes.asrTime)
-    val maghribIqamahTime = this.getIqamahTime(PrayerKeys.MAGHRIB, prayerTimes.maghribTime)
-    val ishaIqamahTime = this.getIqamahTime(PrayerKeys.ISHA, prayerTimes.ishaTime)
+    val fajrIqamahTime = this.getIqamahTime(PrayerKey.FAJR, prayerTimes.fajrTime)
+    val dhuhrIqamahTime = this.getIqamahTime(PrayerKey.DHUHR, prayerTimes.dhuhrTime)
+    val asrIqamahTime = this.getIqamahTime(PrayerKey.ASR, prayerTimes.asrTime)
+    val maghribIqamahTime = this.getIqamahTime(PrayerKey.MAGHRIB, prayerTimes.maghribTime)
+    val ishaIqamahTime = this.getIqamahTime(PrayerKey.ISHA, prayerTimes.ishaTime)
 
     return DailyPrayerTimes(
         date = prayerTimes.date,
@@ -56,12 +57,4 @@ fun List<IqamahConfig>.getIqamahTimes(prayerTimes: DailyPrayerTimes): DailyPraye
 object IqamahMode {
     const val EXACT_TIME = "exact_time"
     const val AFTER_ADHAN = "after_adhan"
-}
-
-object PrayerKeys {
-    const val FAJR = "fajr"
-    const val DHUHR = "dhuhr"
-    const val ASR = "asr"
-    const val MAGHRIB = "maghrib"
-    const val ISHA = "isha"
 }

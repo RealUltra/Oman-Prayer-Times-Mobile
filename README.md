@@ -47,6 +47,15 @@ To build a debug APK:
 
 ## Planned
 
+### v26.07.1
+
+- Added: Auto-detection of cities.
+
+### v26.06.2
+
+- Added: Custom Reminders
+- Added: Language, City, Iqamah Times and Reminders setup on startup.
+
 ### v26.06.1
 
 - Added: Prayer Times from MERA's website for any date.
@@ -54,13 +63,11 @@ To build a debug APK:
 - Added: Prayer Times caching for offline use.
 - Added: Settings Page
 - Added: Iqamah Times
-- Added: Custom Reminders
 - Added: Theme Settings
 - Added: City Selection
-- Added: Arabic translation
 - Added: Language Settings
-- Added: Language, City, Iqamah Times and Reminders setup on startup.
-- Added: Auto-detection of cities.
+    - Added: Arabic translation
+- Added: In-app updates.
 
 ## Changelog
 

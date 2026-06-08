@@ -20,9 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
 import com.codealyst.omanprayertimes.ui.components.SegmentedControl
 import com.codealyst.omanprayertimes.ui.components.SegmentedControlOption
@@ -52,7 +54,7 @@ fun TimeSelector(
     fun updateExactTime(
         nextHour: String = exactHour,
         nextMinute: String = exactMinute,
-        nextPeriod: String = exactPeriod
+        nextPeriod: TimePeriod = exactPeriod
     ) {
         toTwentyFourHourTime(nextHour, nextMinute, nextPeriod)?.let(onExactTimeChange)
     }
@@ -91,7 +93,7 @@ fun TimeSelector(
 private data class ExactTimeParts(
     val hour: String,
     val minute: String,
-    val period: String
+    val period: TimePeriod
 )
 
 private fun parseInitialExactTime(initialExactTime: String): ExactTimeParts {
@@ -100,14 +102,14 @@ private fun parseInitialExactTime(initialExactTime: String): ExactTimeParts {
     val minute = parts.getOrNull(1)?.toIntOrNull()
 
     if (hour == null || minute == null || hour !in 0..23 || minute !in 0..59) {
-        return ExactTimeParts(hour = "7", minute = "15", period = "PM")
+        return ExactTimeParts(hour = "0", minute = "00", period = TimePeriod.AM)
     }
 
     val hour12 = when (val value = hour % 12) {
         0 -> 12
         else -> value
     }
-    val period = if (hour < 12) "AM" else "PM"
+    val period = if (hour < 12) TimePeriod.AM else TimePeriod.PM
 
     return ExactTimeParts(
         hour = hour12.toString(),
@@ -116,7 +118,11 @@ private fun parseInitialExactTime(initialExactTime: String): ExactTimeParts {
     )
 }
 
-private fun toTwentyFourHourTime(hourText: String, minuteText: String, period: String): String? {
+private fun toTwentyFourHourTime(
+    hourText: String,
+    minuteText: String,
+    period: TimePeriod
+): String? {
     val hour = hourText.toIntOrNull()
     val minute = minuteText.toIntOrNull()
 
@@ -125,9 +131,8 @@ private fun toTwentyFourHourTime(hourText: String, minuteText: String, period: S
     }
 
     val hour24 = when (period) {
-        "AM" -> if (hour == 12) 0 else hour
-        "PM" -> if (hour == 12) 12 else hour + 12
-        else -> return null
+        TimePeriod.AM -> if (hour == 12) 0 else hour
+        TimePeriod.PM -> if (hour == 12) 12 else hour + 12
     }
 
     return "${hour24.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
@@ -163,7 +168,7 @@ private fun MinutesAfterAdhanInput(
             colors = compactTextFieldColors(),
             suffix = {
                 Text(
-                    "min",
+                    stringResource(R.string.minute_abbreviation),
                     style = fonts.labelLarge,
                     color = colorScheme.onSurfaceVariant
                 )
@@ -171,7 +176,7 @@ private fun MinutesAfterAdhanInput(
         )
 
         Text(
-            "minutes after adhan",
+            stringResource(R.string.minutes_after_adhan),
             style = fonts.bodyMedium,
             color = colorScheme.onSurfaceVariant
         )
@@ -182,10 +187,10 @@ private fun MinutesAfterAdhanInput(
 private fun ExactTimeInput(
     hour: String,
     minute: String,
-    period: String,
+    period: TimePeriod,
     onHourChange: (String) -> Unit,
     onMinuteChange: (String) -> Unit,
-    onPeriodChange: (String) -> Unit
+    onPeriodChange: (TimePeriod) -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
@@ -210,7 +215,7 @@ private fun ExactTimeInput(
             textStyle = fonts.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             shape = RoundedCornerShape(10.dp),
             colors = compactTextFieldColors(),
-            placeholder = { Text("7") }
+            placeholder = { Text(stringResource(R.string.exact_hour_placeholder)) }
         )
 
         Text(
@@ -234,13 +239,13 @@ private fun ExactTimeInput(
             textStyle = fonts.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             shape = RoundedCornerShape(10.dp),
             colors = compactTextFieldColors(),
-            placeholder = { Text("15") }
+            placeholder = { Text(stringResource(R.string.exact_minute_placeholder)) }
         )
 
         SegmentedControl(
             options = listOf(
-                SegmentedControlOption("AM", "AM"),
-                SegmentedControlOption("PM", "PM")
+                SegmentedControlOption(stringResource(R.string.am), TimePeriod.AM),
+                SegmentedControlOption(stringResource(R.string.pm), TimePeriod.PM)
             ),
             selectedValue = period,
             modifier = Modifier.widthIn(min = 124.dp),
@@ -258,3 +263,7 @@ private fun compactTextFieldColors() = OutlinedTextFieldDefaults.colors(
     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
     cursorColor = MaterialTheme.colorScheme.primary
 )
+
+private enum class TimePeriod {
+    AM, PM
+}

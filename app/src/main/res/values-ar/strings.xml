@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">أوقات الصلاة في عمان</string>
+
+    <string name="fajr">الفجر</string>
+    <string name="sunrise">الشروق</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="asr">العصر</string>
+    <string name="maghrib">المغرب</string>
+    <string name="isha">العشاء</string>
+
+    <string name="prayer_times">أوقات الصلاة</string>
+    <string name="settings">الإعدادات</string>
+    <string name="general">عام</string>
+    <string name="city">المدينة</string>
+    <string name="language">اللغة</string>
+    <string name="theme">المظهر</string>
+    <string name="prayer_setup">إعدادات الصلاة</string>
+    <string name="iqamah_times">أوقات الإقامة</string>
+    <string name="configure">ضبط</string>
+    <string name="reminders">التذكيرات</string>
+    <string name="coming_soon">قريبًا</string>
+    <string name="about">حول التطبيق</string>
+    <string name="version">الإصدار</string>
+    <string name="version_name">الإصدار %1$s</string>
+
+    <string name="today">اليوم</string>
+    <string name="tomorrow">غدًا</string>
+    <string name="custom_date">مخصص</string>
+    <string name="use_date">استخدام التاريخ</string>
+    <string name="cancel">إلغاء</string>
+
+    <string name="search">بحث</string>
+    <string name="no_results">لا توجد نتائج</string>
+
+    <string name="salah">الصلاة</string>
+    <string name="adhan">الأذان</string>
+    <string name="iqamah">الإقامة</string>
+    <string name="no_time_placeholder">-</string>
+    <string name="next_event_adhan_label">أذان %1$s خلال</string>
+    <string name="next_event_iqamah_label">إقامة %1$s خلال</string>
+    <string name="next_event_sunrise_label">الشروق خلال</string>
+    <string name="use_iqamah_times">استخدام أوقات الإقامة</string>
+    <string name="minute_abbreviation">د</string>
+    <string name="minutes_after_adhan">دقائق بعد الأذان</string>
+    <string name="exact_hour_placeholder">٧</string>
+    <string name="exact_minute_placeholder">١٥</string>
+
+    <string name="duration_hours">%1$s س</string>
+    <string name="duration_minutes">%1$s د</string>
+    <string name="duration_seconds">%1$s ث</string>
+    <string name="duration_hours_minutes">%1$s س %2$s د</string>
+
+    <string name="am">ص</string>
+    <string name="pm">م</string>
+</resources>

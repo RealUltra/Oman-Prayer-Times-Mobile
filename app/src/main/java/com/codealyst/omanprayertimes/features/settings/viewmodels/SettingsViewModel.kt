@@ -33,12 +33,6 @@ class SettingsViewModel @Inject constructor(private val repository: SettingsRepo
         }
     }
 
-    fun setLanguage(language: String) {
-        viewModelScope.launch {
-            repository.setLanguage(language)
-        }
-    }
-
     fun setTheme(theme: String) {
         viewModelScope.launch {
             repository.setTheme(theme)

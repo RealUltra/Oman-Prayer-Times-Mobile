@@ -8,9 +8,9 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.codealyst.omanprayertimes.features.database.daos.IqamahConfigDao
 import com.codealyst.omanprayertimes.features.database.entities.IqamahConfigEntity
+import com.codealyst.omanprayertimes.features.prayer_times.PrayerKey
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahConfig
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
-import com.codealyst.omanprayertimes.features.settings.dtos.PrayerKeys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -22,22 +22,20 @@ class SettingsRepository @Inject constructor(
 ) {
     private companion object {
         val CITY_ID = intPreferencesKey("city_id")
-        val LANGUAGE = stringPreferencesKey("language")
         val THEME = stringPreferencesKey("theme")
         val IQAMAH_TIMES_ENABLED = booleanPreferencesKey("iqamah_times_enabled")
         val DEFAULT_IQAMAH_CONFIGS = listOf(
-            IqamahConfig(PrayerKeys.FAJR, IqamahMode.AFTER_ADHAN, 25, null),
-            IqamahConfig(PrayerKeys.DHUHR, IqamahMode.AFTER_ADHAN, 20, null),
-            IqamahConfig(PrayerKeys.ASR, IqamahMode.AFTER_ADHAN, 20, null),
-            IqamahConfig(PrayerKeys.MAGHRIB, IqamahMode.AFTER_ADHAN, 5, null),
-            IqamahConfig(PrayerKeys.ISHA, IqamahMode.AFTER_ADHAN, 20, null)
+            IqamahConfig(PrayerKey.FAJR, IqamahMode.AFTER_ADHAN, 25, null),
+            IqamahConfig(PrayerKey.DHUHR, IqamahMode.AFTER_ADHAN, 20, null),
+            IqamahConfig(PrayerKey.ASR, IqamahMode.AFTER_ADHAN, 20, null),
+            IqamahConfig(PrayerKey.MAGHRIB, IqamahMode.AFTER_ADHAN, 5, null),
+            IqamahConfig(PrayerKey.ISHA, IqamahMode.AFTER_ADHAN, 20, null)
         )
     }
 
     val settingsFlow: Flow<AppSettings> = dataStore.data.map { prefs ->
         AppSettings(
             cityId = prefs[CITY_ID] ?: 0,
-            language = prefs[LANGUAGE] ?: "",
             theme = prefs[THEME] ?: "",
             iqamahTimesEnabled = prefs[IQAMAH_TIMES_ENABLED] ?: false
         )
@@ -50,12 +48,6 @@ class SettingsRepository @Inject constructor(
     suspend fun setCityId(cityId: Int) {
         dataStore.edit { prefs ->
             prefs[CITY_ID] = cityId
-        }
-    }
-
-    suspend fun setLanguage(language: String) {
-        dataStore.edit { prefs ->
-            prefs[LANGUAGE] = language
         }
     }
 
@@ -83,7 +75,7 @@ class SettingsRepository @Inject constructor(
 
     private fun IqamahConfigEntity.toDto(): IqamahConfig {
         return IqamahConfig(
-            prayerKey = prayerKey,
+            prayerKey = prayerKey.toPrayerKey(),
             mode = mode,
             minutesAfterAdhan = minutesAfterAdhan,
             exactTime = exactTime
@@ -92,10 +84,28 @@ class SettingsRepository @Inject constructor(
 
     private fun IqamahConfig.toEntity(): IqamahConfigEntity {
         return IqamahConfigEntity(
-            prayerKey = prayerKey,
+            prayerKey = prayerKey.toIqamahConfigKey(),
             mode = mode,
             minutesAfterAdhan = minutesAfterAdhan,
             exactTime = exactTime
         )
+    }
+
+    private fun PrayerKey.toIqamahConfigKey(): String = when (this) {
+        PrayerKey.FAJR -> "fajr"
+        PrayerKey.SUNRISE -> "sunrise"
+        PrayerKey.DHUHR -> "dhuhr"
+        PrayerKey.ASR -> "asr"
+        PrayerKey.MAGHRIB -> "maghrib"
+        PrayerKey.ISHA -> "isha"
+    }
+
+    private fun String.toPrayerKey(): PrayerKey = when (this) {
+        "fajr" -> PrayerKey.FAJR
+        "dhuhr" -> PrayerKey.DHUHR
+        "asr" -> PrayerKey.ASR
+        "maghrib" -> PrayerKey.MAGHRIB
+        "isha" -> PrayerKey.ISHA
+        else -> PrayerKey.SUNRISE
     }
 }

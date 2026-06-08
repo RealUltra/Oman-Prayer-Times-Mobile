@@ -21,9 +21,11 @@ import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.features.prayer_times.titleRes
 
 @Composable
 fun NextEventTimer(
@@ -34,15 +36,23 @@ fun NextEventTimer(
     val adhanColor = colorScheme.tertiary
     val iqamahColor = colorScheme.primary
 
-    val label: String;
+    var label = "";
     val labelColor = if (nextEvent?.isAdhan ?: true) adhanColor else iqamahColor
 
-    if (nextEvent == null) {
-        label = "";
-    } else {
-        val suffix =
-            if (nextEvent.isShurooq) "" else if (nextEvent.isAdhan) " Adhan" else " Iqamah";
-        label = "${nextEvent.salahName}${suffix} in"
+    if (nextEvent != null) {
+        label = if (nextEvent.isShurooq) {
+            stringResource(R.string.next_event_sunrise_label)
+        } else if (nextEvent.isAdhan) {
+            stringResource(
+                R.string.next_event_adhan_label,
+                stringResource(nextEvent.prayerKey.titleRes())
+            )
+        } else {
+            stringResource(
+                R.string.next_event_iqamah_label,
+                stringResource(nextEvent.prayerKey.titleRes())
+            )
+        }
     }
 
     val fonts = MaterialTheme.typography;
@@ -86,7 +96,7 @@ fun NextEventTimer(
                 Spacer(Modifier.height(8.dp))
             }
             Text(
-                nextEvent?.secondsLeft?.formatTime() ?: "-",
+                nextEvent?.secondsLeft?.let { formatDurationText(it) } ?: "-",
                 style = fonts.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = labelColor
             )
@@ -94,29 +104,28 @@ fun NextEventTimer(
     }
 }
 
-fun Int.formatTime(): String {
-    val totalSeconds = this.coerceAtLeast(0)
+@Composable
+private fun formatDurationText(secondsLeft: Int): String {
+    val totalSeconds = secondsLeft.coerceAtLeast(0)
+    val roundedMinutes = (totalSeconds + 59) / 60
 
-    return if (totalSeconds >= 3600) {
+    return if (roundedMinutes >= 60) {
         // Greater than or equal to 1 hour.
-
-        val roundedMinutes = (totalSeconds + 59) / 60
         val hours = roundedMinutes / 60
         val minutes = roundedMinutes % 60
 
         if (minutes == 0) {
-            "${hours}h"
+            stringResource(R.string.duration_hours, hours)
         } else {
-            "${hours}h ${minutes}m"
+            stringResource(R.string.duration_hours_minutes, hours, minutes)
         }
 
     } else if (totalSeconds >= 60) {
         // Less than 1 hour, more than or equal to 1 minute.
-        val minutes = (totalSeconds + 59) / 60
-        "${minutes}m"
+        stringResource(R.string.duration_minutes, roundedMinutes)
 
     } else {
         // Under 60 seconds
-        "${totalSeconds}s"
+        stringResource(R.string.duration_seconds, totalSeconds)
     }
 }

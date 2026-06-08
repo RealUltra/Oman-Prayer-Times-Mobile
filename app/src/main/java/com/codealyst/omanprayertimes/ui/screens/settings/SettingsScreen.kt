@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.settings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.BuildConfig
+import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.CitiesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
@@ -43,6 +48,9 @@ fun SettingsScreen(
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
 
+    val languageLabels = stringArrayResource(R.array.languages)
+    val themeLabels = stringArrayResource(R.array.themes)
+
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
 
@@ -52,14 +60,14 @@ fun SettingsScreen(
             .background(colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
-        ScreenHeader(title = "Settings")
+        ScreenHeader(title = stringResource(R.string.settings))
 
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            SettingsGroup(title = "General") {
-                SettingsRow(title = "City") {
+            SettingsGroup(title = stringResource(R.string.general)) {
+                SettingsRow(title = stringResource(R.string.city)) {
                     SearchableDropdown(
                         options = citiesList.map { c -> DropdownOptions(c.cityName, c.cityId) },
                         selectedValue = settings.cityId,
@@ -69,26 +77,26 @@ fun SettingsScreen(
 
                 HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
 
-                SettingsRow(title = "Language") {
+                SettingsRow(title = stringResource(R.string.language)) {
                     Dropdown(
                         options = listOf(
-                            DropdownOptions("Default", ""),
-                            DropdownOptions("English", "en"),
-                            DropdownOptions("Arabic", "ar"),
+                            DropdownOptions(languageLabels[0], ""),
+                            DropdownOptions(languageLabels[1], "en"),
+                            DropdownOptions(languageLabels[2], "ar"),
                         ),
-                        selectedValue = settings.language,
-                        onOptionSelected = { language -> settingsViewModel.setLanguage(language) },
+                        selectedValue = getSelectedLanguageTag(),
+                        onOptionSelected = { language -> setLanguage(language) },
                     )
                 }
 
                 HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
 
-                SettingsRow(title = "Theme") {
+                SettingsRow(title = stringResource(R.string.theme)) {
                     Dropdown(
                         options = listOf(
-                            DropdownOptions("Default", ""),
-                            DropdownOptions("Light", "light"),
-                            DropdownOptions("Dark", "dark")
+                            DropdownOptions(themeLabels[0], ""),
+                            DropdownOptions(themeLabels[1], "light"),
+                            DropdownOptions(themeLabels[2], "dark")
                         ),
                         selectedValue = settings.theme,
                         onOptionSelected = { theme -> settingsViewModel.setTheme(theme) },
@@ -96,10 +104,10 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsGroup(title = "Prayer Setup") {
-                SettingsRow(title = "Iqamah Times") {
+            SettingsGroup(title = stringResource(R.string.prayer_setup)) {
+                SettingsRow(title = stringResource(R.string.iqamah_times)) {
                     Text(
-                        "Configure",
+                        stringResource(R.string.configure),
                         style = fonts.bodyMedium,
                         color = colorScheme.primary,
                         modifier = Modifier.clickable(
@@ -111,17 +119,17 @@ fun SettingsScreen(
 
                 HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
 
-                SettingsRow(title = "Reminders") {
+                SettingsRow(title = stringResource(R.string.reminders)) {
                     Text(
-                        "Coming Soon",
+                        stringResource(R.string.coming_soon),
                         style = fonts.bodyMedium,
                         color = colorScheme.onSurfaceVariant,
                     )
                 }
             }
 
-            SettingsGroup(title = "About") {
-                SettingsRow(title = "Version") {
+            SettingsGroup(title = stringResource(R.string.about)) {
+                SettingsRow(title = stringResource(R.string.version)) {
                     Text(
                         "v${BuildConfig.VERSION_NAME}",
                         style = fonts.bodyMedium,
@@ -131,4 +139,22 @@ fun SettingsScreen(
             }
         }
     }
+}
+
+fun getSelectedLanguageTag(): String {
+    return AppCompatDelegate
+        .getApplicationLocales()
+        .get(0)
+        ?.toLanguageTag() ?: ""
+}
+
+fun setLanguage(language: String) {
+    val locales =
+        if (language.isBlank()) {
+            LocaleListCompat.getEmptyLocaleList()
+        } else {
+            LocaleListCompat.forLanguageTags(language)
+        }
+
+    AppCompatDelegate.setApplicationLocales(locales)
 }

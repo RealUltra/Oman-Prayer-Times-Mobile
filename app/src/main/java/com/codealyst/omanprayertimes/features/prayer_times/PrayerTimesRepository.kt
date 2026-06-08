@@ -11,7 +11,6 @@ import com.codealyst.omanprayertimes.features.database.entities.CitiesCacheEntit
 import com.codealyst.omanprayertimes.features.database.entities.CityEntity
 import com.codealyst.omanprayertimes.features.database.entities.DailyPrayerTimesEntity
 import com.codealyst.omanprayertimes.features.database.entities.YearlyPrayerTimesEntity
-import com.codealyst.omanprayertimes.features.database.entities.toDto
 import java.time.DateTimeException
 import java.time.LocalDate
 import javax.inject.Inject
@@ -121,21 +120,7 @@ class PrayerTimesRepository @Inject constructor(
             )
         )
 
-        dailyPrayerTimesDao.upsertAll(
-            response.prayerTimes.map { dailyPrayerTimes ->
-                DailyPrayerTimesEntity(
-                    year = year,
-                    cityId = cityId,
-                    date = dailyPrayerTimes.value.date,
-                    fajr = dailyPrayerTimes.value.fajrTime,
-                    sunrise = dailyPrayerTimes.value.sunriseTime,
-                    dhuhr = dailyPrayerTimes.value.dhuhrTime,
-                    asr = dailyPrayerTimes.value.asrTime,
-                    maghrib = dailyPrayerTimes.value.maghribTime,
-                    isha = dailyPrayerTimes.value.ishaTime
-                )
-            }
-        )
+        dailyPrayerTimesDao.upsertAll(response.prayerTimes.map { it.value.toEntity(year, cityId) })
     }
 
     private suspend fun refreshCitiesCache() {
@@ -153,14 +138,48 @@ class PrayerTimesRepository @Inject constructor(
             )
         ).toInt()
 
-        cityDao.upsertAll(
-            response.cities.map { c ->
-                CityEntity(
-                    cityId = c.cityId,
-                    cacheId = cacheId,
-                    cityName = c.cityName
-                )
-            }
+        cityDao.upsertAll(response.cities.map { it.toEntity(cacheId) })
+    }
+
+    private fun DailyPrayerTimesEntity.toDto(displayDate: String = this.date): DailyPrayerTimes {
+        return DailyPrayerTimes(
+            date = displayDate,
+            fajrTime = this.fajr,
+            sunriseTime = this.sunrise,
+            dhuhrTime = this.dhuhr,
+            asrTime = this.asr,
+            maghribTime = this.maghrib,
+            ishaTime = this.isha
+        )
+    }
+
+    private fun DailyPrayerTimes.toEntity(
+        year: Int,
+        cityId: Int = 0,
+        displayDate: String = this.date
+    ): DailyPrayerTimesEntity {
+        return DailyPrayerTimesEntity(
+            year = year,
+            cityId = cityId,
+            date = displayDate,
+            fajr = fajrTime,
+            sunrise = sunriseTime,
+            dhuhr = dhuhrTime,
+            asr = asrTime,
+            maghrib = maghribTime,
+            isha = ishaTime
+        )
+    }
+
+    private fun CityEntity.toDto(): City {
+        return City(cityId = cityId, cityName = cityName)
+    }
+
+    private fun City.toEntity(cacheId: Int): CityEntity {
+        return CityEntity(
+            cityId = cityId,
+            cacheId = cacheId,
+            cityName = cityName
         )
     }
 }

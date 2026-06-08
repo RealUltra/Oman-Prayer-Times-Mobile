@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.codealyst.omanprayertimes.R
@@ -24,7 +25,8 @@ import java.time.temporal.ChronoField
 fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
     val timeText = now.format(DateTimeFormatter.ofPattern("hh:mm:ss a"))
     val dateText = now.format(DateTimeFormatter.ofPattern("EEE, d MMM yyyy"))
-    val hijriDateText = formatHijrahDate(HijrahDate.from(now))
+    val hijriDateText =
+        formatHijrahDate(HijrahDate.from(now), stringArrayResource(R.array.hijri_months))
 
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
@@ -62,25 +64,9 @@ fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
     }
 }
 
-fun formatHijrahDate(hijrahDate: HijrahDate): String {
-    val hijriMonths = listOf(
-        "Muharram",
-        "Safar",
-        "Rabi al-Awwal",
-        "Rabi al-Thani",
-        "Jumada al-Awwal",
-        "Jumada al-Thani",
-        "Rajab",
-        "Sha'ban",
-        "Ramadan",
-        "Shawwal",
-        "Dhu al-Qi'dah",
-        "Dhu al-Hijjah"
-    )
-
+fun formatHijrahDate(hijrahDate: HijrahDate, hijriMonths: Array<String>): String {
     val day = hijrahDate.get(ChronoField.DAY_OF_MONTH)
     val month = hijrahDate.get(ChronoField.MONTH_OF_YEAR)
     val year = hijrahDate.get(ChronoField.YEAR_OF_ERA)
-
     return "$day ${hijriMonths[month - 1]} $year"
 }

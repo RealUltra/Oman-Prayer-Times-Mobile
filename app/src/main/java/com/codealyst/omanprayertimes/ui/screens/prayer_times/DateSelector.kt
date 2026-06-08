@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,12 +19,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
 import com.codealyst.omanprayertimes.ui.components.SegmentedControl
 import com.codealyst.omanprayertimes.ui.components.SegmentedControlOption
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -33,8 +36,7 @@ fun DateSelector(
     modifier: Modifier = Modifier,
     onDateSelected: (LocalDate) -> Unit = {},
 ) {
-    val omanZone = remember { ZoneId.of("Asia/Muscat") }
-    val today = remember { LocalDate.now(omanZone) }
+    val today = remember { getOmanDate() }
     val tomorrow = remember(today) { today.plusDays(1) }
     var selectedDateText by rememberSaveable { mutableStateOf(today.toString()) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
@@ -56,7 +58,7 @@ fun DateSelector(
         ) {
             SegmentedControl(
                 options = DateSelectorOption.entries.map { option ->
-                    SegmentedControlOption(option.label, option)
+                    SegmentedControlOption(stringResource(option.labelRes), option)
                 },
                 selectedValue = selectedOption,
                 modifier = Modifier.fillMaxWidth(),
@@ -99,12 +101,12 @@ fun DateSelector(
                         showDatePicker = false
                     }
                 ) {
-                    Text("Use date")
+                    Text(stringResource(R.string.use_date))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -113,10 +115,10 @@ fun DateSelector(
     }
 }
 
-private enum class DateSelectorOption(val label: String) {
-    Today("Today"),
-    Tomorrow("Tomorrow"),
-    Custom("Custom"),
+private enum class DateSelectorOption(@StringRes val labelRes: Int) {
+    Today(R.string.today),
+    Tomorrow(R.string.tomorrow),
+    Custom(R.string.custom_date),
 }
 
 private val selectedDateFormatter: DateTimeFormatter =

@@ -28,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.codealyst.omanprayertimes.R
 
 @Composable
 fun <T> SearchableDropdown(
@@ -109,7 +111,7 @@ fun <T> SearchableDropdown(
 fun <T> ExpandedSearchableDropdownMenu(
     options: List<DropdownOptions<T>>,
     modifier: Modifier = Modifier,
-    searchPlaceholder: String = "Search",
+    searchPlaceholder: String? = null,
     expandedTextStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     expandedTextColor: Color = MaterialTheme.colorScheme.onSurface,
     onDismissRequest: () -> Unit,
@@ -144,7 +146,7 @@ fun <T> ExpandedSearchableDropdownMenu(
                     onValueChange = { searchText = it },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    placeholder = { Text(searchPlaceholder) }
+                    placeholder = { Text(searchPlaceholder ?: stringResource(R.string.search)) }
                 )
 
                 LazyColumn(
@@ -165,7 +167,7 @@ fun <T> ExpandedSearchableDropdownMenu(
                     if (filteredOptions.isEmpty()) {
                         item {
                             Text(
-                                text = "No results",
+                                text = stringResource(R.string.no_results),
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant

@@ -13,23 +13,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
+import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDateTime
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTimes
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 @Composable
 fun PrayerTimesScreen(modifier: Modifier = Modifier) {
-    // Oman's timezone
-    val omanZone = ZoneId.of("Asia/Muscat")
-
     // Prayer times displayed for:
     var tableDate by rememberSaveable {
-        mutableStateOf(LocalDate.now(omanZone).toString())
+        mutableStateOf(getOmanDate().toString())
     }
 
     // Get prayer times
@@ -59,11 +56,11 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
     }
 
     // Get the current date and time in Oman.
-    var now by remember { mutableStateOf(ZonedDateTime.now(omanZone)) }
+    var now by remember { mutableStateOf(getOmanDateTime()) }
 
     LaunchedEffect(Unit) {
         while (true) {
-            now = ZonedDateTime.now(omanZone)
+            now = getOmanDateTime()
             delay(1000)
         }
     }

@@ -12,19 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
+import com.codealyst.omanprayertimes.features.prayer_times.PrayerKey
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahConfig
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
-import com.codealyst.omanprayertimes.features.settings.dtos.PrayerKeys
 import com.codealyst.omanprayertimes.features.settings.dtos.get
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.ScreenHeader
-import java.time.LocalDate
-import java.time.ZoneId
 
 @Composable
 fun IqamahConfigScreen(modifier: Modifier = Modifier) {
@@ -38,11 +39,9 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
     val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
 
-    val omanZone = ZoneId.of("Asia/Muscat")
-
     LaunchedEffect(settings.cityId) {
         prayerTimesViewModel.fetchPrayerTimesForDate(
-            LocalDate.now(omanZone),
+            getOmanDate(),
             cityId = settings.cityId
         )
     }
@@ -56,7 +55,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
             .background(colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
-        ScreenHeader(title = "Iqamah Times")
+        ScreenHeader(title = stringResource(R.string.iqamah_times))
 
         Column(
             modifier = Modifier.padding(20.dp),
@@ -69,66 +68,66 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
 
             if (settings.iqamahTimesEnabled) {
                 IqamahConfigCard(
-                    prayerKey = PrayerKeys.FAJR,
-                    initialMode = iqamahConfigs.initialMode(PrayerKeys.FAJR),
+                    prayerKey = PrayerKey.FAJR,
+                    initialMode = iqamahConfigs.initialMode(PrayerKey.FAJR),
                     initialMinutesAfterAdhan = iqamahConfigs.initialMinutesAfterAdhan(
-                        PrayerKeys.FAJR,
+                        PrayerKey.FAJR,
                         "25"
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
-                        PrayerKeys.FAJR,
+                        PrayerKey.FAJR,
                         prayerTimes?.fajrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
                 IqamahConfigCard(
-                    prayerKey = PrayerKeys.DHUHR,
-                    initialMode = iqamahConfigs.initialMode(PrayerKeys.DHUHR),
+                    prayerKey = PrayerKey.DHUHR,
+                    initialMode = iqamahConfigs.initialMode(PrayerKey.DHUHR),
                     initialMinutesAfterAdhan = iqamahConfigs.initialMinutesAfterAdhan(
-                        PrayerKeys.DHUHR,
+                        PrayerKey.DHUHR,
                         "20"
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
-                        PrayerKeys.DHUHR,
+                        PrayerKey.DHUHR,
                         prayerTimes?.dhuhrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
                 IqamahConfigCard(
-                    prayerKey = PrayerKeys.ASR,
-                    initialMode = iqamahConfigs.initialMode(PrayerKeys.ASR),
+                    prayerKey = PrayerKey.ASR,
+                    initialMode = iqamahConfigs.initialMode(PrayerKey.ASR),
                     initialMinutesAfterAdhan = iqamahConfigs.initialMinutesAfterAdhan(
-                        PrayerKeys.ASR,
+                        PrayerKey.ASR,
                         "20"
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
-                        PrayerKeys.ASR,
+                        PrayerKey.ASR,
                         prayerTimes?.asrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
                 IqamahConfigCard(
-                    prayerKey = PrayerKeys.MAGHRIB,
-                    initialMode = iqamahConfigs.initialMode(PrayerKeys.MAGHRIB),
+                    prayerKey = PrayerKey.MAGHRIB,
+                    initialMode = iqamahConfigs.initialMode(PrayerKey.MAGHRIB),
                     initialMinutesAfterAdhan = iqamahConfigs.initialMinutesAfterAdhan(
-                        PrayerKeys.MAGHRIB,
+                        PrayerKey.MAGHRIB,
                         "5"
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
-                        PrayerKeys.MAGHRIB,
+                        PrayerKey.MAGHRIB,
                         prayerTimes?.maghribTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
                 IqamahConfigCard(
-                    prayerKey = PrayerKeys.ISHA,
-                    initialMode = iqamahConfigs.initialMode(PrayerKeys.ISHA),
+                    prayerKey = PrayerKey.ISHA,
+                    initialMode = iqamahConfigs.initialMode(PrayerKey.ISHA),
                     initialMinutesAfterAdhan = iqamahConfigs.initialMinutesAfterAdhan(
-                        PrayerKeys.ISHA,
+                        PrayerKey.ISHA,
                         "20"
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
-                        PrayerKeys.ISHA,
+                        PrayerKey.ISHA,
                         prayerTimes?.ishaTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
@@ -140,19 +139,19 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
 
 private const val DEFAULT_INITIAL_EXACT_TIME = "00:00"
 
-private fun List<IqamahConfig>.initialMode(prayerKey: String): String {
+private fun List<IqamahConfig>.initialMode(prayerKey: PrayerKey): String {
     return get(prayerKey)?.mode ?: IqamahMode.AFTER_ADHAN
 }
 
 private fun List<IqamahConfig>.initialMinutesAfterAdhan(
-    prayerKey: String,
+    prayerKey: PrayerKey,
     defaultValue: String
 ): String {
     return get(prayerKey)?.minutesAfterAdhan?.toString() ?: defaultValue
 }
 
 private fun List<IqamahConfig>.initialExactTime(
-    prayerKey: String,
+    prayerKey: PrayerKey,
     defaultValue: String
 ): String {
     return get(prayerKey)?.exactTime ?: defaultValue

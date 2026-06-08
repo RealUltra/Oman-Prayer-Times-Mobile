@@ -1,5 +1,6 @@
 package com.codealyst.omanprayertimes.ui.screens.main
 
+import androidx.annotation.StringRes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -9,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -41,10 +43,10 @@ fun BottomNavBar(navController: NavHostController) {
                 icon = {
                     Icon(
                         painter = painterResource(destination.icon),
-                        contentDescription = destination.contentDescription
+                        contentDescription = stringResource(destination.contentDescriptionRes)
                     )
                 },
-                label = { Text(destination.label) }
+                label = { Text(stringResource(destination.labelRes)) }
             )
         }
     }
@@ -52,12 +54,22 @@ fun BottomNavBar(navController: NavHostController) {
 
 enum class Destination(
     val route: String,
-    val label: String,
+    @StringRes val labelRes: Int,
     val icon: Int,
-    val contentDescription: String
+    @StringRes val contentDescriptionRes: Int
 ) {
-    PRAYER_TIMES("prayer_times", "Prayer Times", R.drawable.ic_mosque, "Prayer Times"),
-    SETTINGS("settings", "Settings", R.drawable.ic_settings, "Settings")
+    PRAYER_TIMES(
+        "prayer_times",
+        R.string.prayer_times,
+        R.drawable.ic_mosque,
+        R.string.prayer_times
+    ),
+    SETTINGS(
+        "settings",
+        R.string.settings,
+        R.drawable.ic_settings,
+        R.string.settings
+    )
 }
 
 private fun String?.isInDestination(destination: Destination): Boolean {
