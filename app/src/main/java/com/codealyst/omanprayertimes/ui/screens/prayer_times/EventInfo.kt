@@ -60,7 +60,6 @@ fun getNextEvent(
     var nextEventDate = now.toLocalDate();
 
     if (nextEventTime == null) {
-        println("[getNextEvent] nextEventTime is null. Setting to tomorrow's fajr.")
         nextEventTime = tomorrowPrayerTimes.fajrTime.toLocalTime()
         nextEventDate = nextEventDate.plusDays(1)
     }
