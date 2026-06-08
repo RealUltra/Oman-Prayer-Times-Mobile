@@ -3,9 +3,8 @@
 <a href='https://play.google.com/store/apps/details?id=com.codealyst.omanprayertimes'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="200" /></a>
 
 <p align="center">
-    <img src="./app/src/main/ic_launcher-playstore.png"
+    <img src="./app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp"
     alt="Oman Prayer Times Logo"
-    height="200"
 >
 </p>
 
