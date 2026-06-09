@@ -111,5 +111,6 @@ private fun formatHijrahDate(hijrahDate: HijrahDate, hijriMonths: Array<String>)
 
 private fun Array<String>.getCityById(cityId: Int, cityIds: IntArray): City {
     require(size == cityIds.size)
-    return City(cityName = get(cityIds.find { it == cityId } ?: 0), cityId = cityId)
+    val index = cityIds.indexOf(cityId).coerceAtLeast(0)
+    return City(cityName = get(index), cityId = cityIds[index])
 }

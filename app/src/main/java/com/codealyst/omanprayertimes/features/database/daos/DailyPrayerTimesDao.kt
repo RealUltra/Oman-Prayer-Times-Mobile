@@ -17,6 +17,15 @@ interface DailyPrayerTimesDao {
     )
     suspend fun getByDate(cityId: Int, date: String): DailyPrayerTimesEntity?
 
+    @Query(
+        """
+        SELECT * FROM daily_prayer_times
+        WHERE cityId = :cityId AND year = :year
+        ORDER BY date
+        """
+    )
+    suspend fun getAllByYear(cityId: Int, year: Int): List<DailyPrayerTimesEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(prayerTimes: List<DailyPrayerTimesEntity>)
 }

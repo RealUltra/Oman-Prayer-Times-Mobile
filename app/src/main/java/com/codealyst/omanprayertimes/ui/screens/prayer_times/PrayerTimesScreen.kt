@@ -16,7 +16,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
 import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDateTime
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTimes
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
@@ -24,40 +23,56 @@ import java.time.LocalDate
 
 @Composable
 fun PrayerTimesScreen(modifier: Modifier = Modifier) {
-    // Prayer times displayed for:
-    var tableDate by rememberSaveable {
-        mutableStateOf(getOmanDate().toString())
-    }
+    // Prepare the current date and time in Oman.
+    var now by remember { mutableStateOf(getOmanDateTime()) }
 
-    // Get prayer times
+    // Prayer times displayed for:
+    var tableDate by rememberSaveable { mutableStateOf(getOmanDate().toString()) }
+
+    // Get the prayer times for the selected date.
     val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
     val prayerTimesState = prayerTimesViewModel.state.value;
-    val prayerTimes = if (prayerTimesState is UiState.Success) prayerTimesState.data else null;
+    val tablePrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(LocalDate.parse(tableDate))
 
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
 
-    // Get iqamah times
+    // Get the iqamah times for the selected date.
     val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
-    val iqamahTimes =
-        if (settings.iqamahTimesEnabled && prayerTimes != null) {
-            iqamahConfigs.getIqamahTimes(prayerTimes)
-        } else {
-            null
-        }
 
-    // Every time a date is selected, fetch prayer times.
-    LaunchedEffect(tableDate, settings.cityId) {
-        prayerTimesViewModel.fetchPrayerTimesForDate(
-            LocalDate.parse(tableDate),
-            cityId = settings.cityId
-        );
+    val tableIqamahTimes = if (settings.iqamahTimesEnabled && tablePrayerTimes != null) {
+        iqamahConfigs.getIqamahTimes(tablePrayerTimes)
+    } else {
+        null
     }
 
-    // Get the current date and time in Oman.
-    var now by remember { mutableStateOf(getOmanDateTime()) }
+    // Whenever the city is changed and at every second, update the next event info.
+    val nextEvent: EventInfo? = run {
+        val today = getOmanDate()
+        val tomorrow = today.plusDays(1)
 
+        val todayPrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(today)
+        val tomorrowPrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(tomorrow)
+
+        todayPrayerTimes?.let {
+            val iqamahTimes =
+                if (settings.iqamahTimesEnabled) {
+                    iqamahConfigs.getIqamahTimes(it)
+                } else {
+                    null
+                }
+
+            getNextEvent(
+                now,
+                it,
+                tomorrowPrayerTimes ?: it,
+                iqamahTimes
+            )
+        }
+    }
+
+    // Get the current date and time in Oman
     LaunchedEffect(Unit) {
         while (true) {
             now = getOmanDateTime()
@@ -65,13 +80,13 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    // Retrieve the next event based on prayer times and the current time.
-    val nextEvent =
-        if (prayerTimes != null) {
-            getNextEvent(now, prayerTimes, prayerTimes, iqamahTimes)
-        } else {
-            null
-        }
+    // Every time the city is changed, fetch yearly prayer times.
+    LaunchedEffect(settings.cityId) {
+        prayerTimesViewModel.fetchYearlyPrayerTimes(cityId = settings.cityId);
+    }
+
+
+
 
     Column(
         modifier = modifier
@@ -82,8 +97,8 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         NextEventTimer(nextEvent = nextEvent)
 
         PrayerTimesTable(
-            prayerTimes,
-            iqamahTimes,
+            tablePrayerTimes,
+            tableIqamahTimes,
             nextEvent ?: EventInfo(),
             tableDate,
             modifier = Modifier

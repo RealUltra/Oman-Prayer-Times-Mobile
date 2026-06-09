@@ -11,16 +11,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.R
+import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
 import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
 import com.codealyst.omanprayertimes.features.prayer_times.PrayerKey
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahConfig
 import com.codealyst.omanprayertimes.features.settings.dtos.IqamahMode
 import com.codealyst.omanprayertimes.features.settings.dtos.get
@@ -32,22 +35,20 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
     // Get prayer times
     val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>()
     val prayerTimesState = prayerTimesViewModel.state.value
-    val prayerTimes = if (prayerTimesState is UiState.Success) prayerTimesState.data else null
+    var todayPrayerTimes: DailyPrayerTimes? by remember { mutableStateOf(null) }
 
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
     val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
 
-    LaunchedEffect(settings.cityId) {
-        prayerTimesViewModel.fetchPrayerTimesForDate(
-            getOmanDate(),
-            cityId = settings.cityId
-        )
+    // Refresh today's prayer times when the yearly prayer times are updated.
+    LaunchedEffect(prayerTimesState) {
+        prayerTimesViewModel.fetchYearlyPrayerTimes(cityId = settings.cityId)
+        todayPrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(getOmanDate())
     }
 
     val colorScheme = MaterialTheme.colorScheme
-    val fonts = MaterialTheme.typography
 
     Column(
         modifier = modifier
@@ -76,7 +77,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
                         PrayerKey.FAJR,
-                        prayerTimes?.fajrTime ?: DEFAULT_INITIAL_EXACT_TIME
+                        todayPrayerTimes?.fajrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
@@ -89,7 +90,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
                         PrayerKey.DHUHR,
-                        prayerTimes?.dhuhrTime ?: DEFAULT_INITIAL_EXACT_TIME
+                        todayPrayerTimes?.dhuhrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
@@ -102,7 +103,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
                         PrayerKey.ASR,
-                        prayerTimes?.asrTime ?: DEFAULT_INITIAL_EXACT_TIME
+                        todayPrayerTimes?.asrTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
@@ -115,7 +116,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
                         PrayerKey.MAGHRIB,
-                        prayerTimes?.maghribTime ?: DEFAULT_INITIAL_EXACT_TIME
+                        todayPrayerTimes?.maghribTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
@@ -128,7 +129,7 @@ fun IqamahConfigScreen(modifier: Modifier = Modifier) {
                     ),
                     initialExactTime = iqamahConfigs.initialExactTime(
                         PrayerKey.ISHA,
-                        prayerTimes?.ishaTime ?: DEFAULT_INITIAL_EXACT_TIME
+                        todayPrayerTimes?.ishaTime ?: DEFAULT_INITIAL_EXACT_TIME
                     ),
                     onChanged = settingsViewModel::setIqamahConfig
                 )
