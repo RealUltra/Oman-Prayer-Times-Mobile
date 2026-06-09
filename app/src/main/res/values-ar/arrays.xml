@@ -17,6 +17,95 @@
         <item>وقت محدد</item>
     </string-array>
 
+    <string-array name="city_names">
+        <item>مسقط</item>
+        <item>إبراء</item>
+        <item>أدم</item>
+        <item>إزكي</item>
+        <item>الأشخرة</item>
+        <item>البريمي</item>
+        <item>الجازر</item>
+        <item>الجماعة</item>
+        <item>الحشمان</item>
+        <item>الحلانيات</item>
+        <item>الحمراء</item>
+        <item>الخابورة</item>
+        <item>الخضرفي</item>
+        <item>لخوير</item>
+        <item>الدقم</item>
+        <item>الرستاق</item>
+        <item>العوابي</item>
+        <item>القابل (ش)</item>
+        <item>القابل (ظ)</item>
+        <item>الكامل والوافي</item>
+        <item>المضيبي</item>
+        <item>المعمورة</item>
+        <item>الحويصة</item>
+        <item>الوسيط</item>
+        <item>الواصل</item>
+        <item>بخاء</item>
+        <item>بدبد</item>
+        <item>بدية</item>
+        <item>بركاء</item>
+        <item>بهلاء</item>
+        <item>ثمريت</item>
+        <item>جدة الحراسيس</item>
+        <item>جعلان بني بو حسن</item>
+        <item>جعلان بني بو علي</item>
+        <item>حبروت</item>
+        <item>هاج</item>
+        <item>دبا البيعة</item>
+        <item>رأس الحد</item>
+        <item>رأس مدركة</item>
+        <item>رخيوت</item>
+        <item>رمال وهيبة</item>
+        <item>ريسوت</item>
+        <item>سدح</item>
+        <item>سمائل</item>
+        <item>سمد الشأن</item>
+        <item>سناو</item>
+        <item>السويق</item>
+        <item>سيح رول</item>
+        <item>سيق</item>
+        <item>سليم</item>
+        <item>شناص</item>
+        <item>صحار</item>
+        <item>صحم</item>
+        <item>سراب</item>
+        <item>صرفيت</item>
+        <item>صلالة</item>
+        <item>صور</item>
+        <item>ضنك</item>
+        <item>طاقة</item>
+        <item>ضلكوت</item>
+        <item>عبري</item>
+        <item>فهود</item>
+        <item>قرن علم</item>
+        <item>قريات</item>
+        <item>قنحات</item>
+        <item>لوى</item>
+        <item>محضة</item>
+        <item>محوت</item>
+        <item>مدحاء</item>
+        <item>مرباط</item>
+        <item>مرمور</item>
+        <item>مرمول</item>
+        <item>مسندم</item>
+        <item>المصنعة</item>
+        <item>مصيرة</item>
+        <item>مقشن</item>
+        <item>منح</item>
+        <item>نخل</item>
+        <item>نزوى</item>
+        <item>نمر</item>
+        <item>هرويل</item>
+        <item>هيما</item>
+        <item>خزان</item>
+        <item>وادي بني خالد</item>
+        <item>وادي حيبي</item>
+        <item>ينقل</item>
+    </string-array>
+
     <string-array name="hijri_months">
         <item>محرم</item>
         <item>صفر</item>

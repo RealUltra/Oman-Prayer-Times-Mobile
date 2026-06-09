@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,8 +26,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.BuildConfig
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.features.api.dtos.City
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.CitiesViewModel
-import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.UiState
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
@@ -40,9 +39,9 @@ fun SettingsScreen(
     onConfigureIqamahTimes: () -> Unit
 ) {
     // Retrieve cities list
-    val citiesViewModel = hiltViewModel<CitiesViewModel>()
-    val state = citiesViewModel.state.value
-    val citiesList: List<City> = if (state is UiState.Success) state.data else emptyList();
+    var cityNames = stringArrayResource(R.array.city_names)
+    var cityIds = integerArrayResource(R.array.city_ids)
+    val citiesList = cityNames.toCityDtos(cityIds)
 
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
@@ -141,14 +140,14 @@ fun SettingsScreen(
     }
 }
 
-fun getSelectedLanguageTag(): String {
+private fun getSelectedLanguageTag(): String {
     return AppCompatDelegate
         .getApplicationLocales()
         .get(0)
         ?.toLanguageTag() ?: ""
 }
 
-fun setLanguage(language: String) {
+private fun setLanguage(language: String) {
     val locales =
         if (language.isBlank()) {
             LocaleListCompat.getEmptyLocaleList()
@@ -157,4 +156,14 @@ fun setLanguage(language: String) {
         }
 
     AppCompatDelegate.setApplicationLocales(locales)
+}
+
+private fun Array<String>.toCityDtos(cityIds: IntArray): List<City> {
+    require(size == cityIds.size)
+    return mapIndexed { index, cityName ->
+        City(
+            cityName = cityName,
+            cityId = cityIds[index]
+        )
+    }.sortedBy { it.cityName }
 }

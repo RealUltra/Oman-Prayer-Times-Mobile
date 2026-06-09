@@ -17,13 +17,13 @@ class SettingsViewModel @Inject constructor(private val repository: SettingsRepo
     ViewModel() {
     val settings: StateFlow<AppSettings> = repository.settingsFlow.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Companion.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = AppSettings()
     )
 
     val iqamahConfigs: StateFlow<List<IqamahConfig>> = repository.iqamahConfigsFlow.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Companion.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
 
