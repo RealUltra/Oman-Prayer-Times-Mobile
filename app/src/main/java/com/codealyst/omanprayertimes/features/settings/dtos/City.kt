@@ -1,4 +1,4 @@
-package com.codealyst.omanprayertimes.features.api.dtos
+package com.codealyst.omanprayertimes.features.settings.dtos
 
 data class City(
     val cityId: Int,

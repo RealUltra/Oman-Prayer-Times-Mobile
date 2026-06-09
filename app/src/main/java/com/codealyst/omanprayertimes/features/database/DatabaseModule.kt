@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
-import com.codealyst.omanprayertimes.features.database.daos.CityDao
 import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
 import com.codealyst.omanprayertimes.features.database.daos.IqamahConfigDao
 import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
@@ -27,7 +25,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "app_database.db"
         )
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
     }
 
@@ -40,16 +38,6 @@ object DatabaseModule {
     @Provides
     fun provideDailyPrayerTimesDao(appDatabase: AppDatabase): DailyPrayerTimesDao =
         appDatabase.getDailyPrayerTimesDao()
-
-    @Singleton
-    @Provides
-    fun provideCitiesCacheDao(appDatabase: AppDatabase): CitiesCacheDao =
-        appDatabase.getCitiesCacheDao()
-
-    @Singleton
-    @Provides
-    fun provideCityDao(appDatabase: AppDatabase): CityDao =
-        appDatabase.getCityDao()
 
     @Singleton
     @Provides
@@ -68,6 +56,13 @@ object DatabaseModule {
                 )
                 """.trimIndent()
             )
+        }
+    }
+
+    private val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("DROP TABLE IF EXISTS cities")
+            db.execSQL("DROP TABLE IF EXISTS cities_cache")
         }
     }
 }

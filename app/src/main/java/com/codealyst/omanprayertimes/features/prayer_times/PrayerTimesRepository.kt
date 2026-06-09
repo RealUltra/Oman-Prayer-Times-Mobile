@@ -1,14 +1,9 @@
 package com.codealyst.omanprayertimes.features.prayer_times
 
 import com.codealyst.omanprayertimes.features.api.PrayerTimesApiService
-import com.codealyst.omanprayertimes.features.api.dtos.City
 import com.codealyst.omanprayertimes.features.api.dtos.DailyPrayerTimes
-import com.codealyst.omanprayertimes.features.database.daos.CitiesCacheDao
-import com.codealyst.omanprayertimes.features.database.daos.CityDao
 import com.codealyst.omanprayertimes.features.database.daos.DailyPrayerTimesDao
 import com.codealyst.omanprayertimes.features.database.daos.YearlyPrayerTimesDao
-import com.codealyst.omanprayertimes.features.database.entities.CitiesCacheEntity
-import com.codealyst.omanprayertimes.features.database.entities.CityEntity
 import com.codealyst.omanprayertimes.features.database.entities.DailyPrayerTimesEntity
 import com.codealyst.omanprayertimes.features.database.entities.YearlyPrayerTimesEntity
 import java.time.DateTimeException
@@ -19,8 +14,6 @@ class PrayerTimesRepository @Inject constructor(
     private val api: PrayerTimesApiService,
     private val yearlyPrayerTimesDao: YearlyPrayerTimesDao,
     private val dailyPrayerTimesDao: DailyPrayerTimesDao,
-    private val citiesCacheDao: CitiesCacheDao,
-    private val cityDao: CityDao
 ) {
     companion object {
         private const val PRAYER_TIMES_CACHE_DURATION =
@@ -28,36 +21,6 @@ class PrayerTimesRepository @Inject constructor(
 
         private const val CITIES_CACHE_DURATION =
             30 * 24 * 60 * 60 * 1000L // 30 days in milliseconds
-    }
-
-    suspend fun getCities(cityId: Int? = null): List<City> {
-        // Check the cache for cities list.
-        val cachedCities = citiesCacheDao.getLatest()
-
-        // Return cached prayer times if they haven't expired.
-        val now = System.currentTimeMillis();
-
-        if (cachedCities != null && cachedCities.expiresAt > now) {
-            println("Cached cities list found.");
-            val cityEntities = cityDao.getByCache(cachedCities.id)
-            return cityEntities.map { e -> e.toDto() }
-                .filter { c -> cityId == null || c.cityId == cityId };
-        }
-
-        // Refresh cities cache.
-        try {
-            refreshCitiesCache();
-        } catch (_: Exception) {
-        }
-
-        // Try fetching the cities list again after refresh.
-        citiesCacheDao.getLatest()?.let {
-            val cityEntities = cityDao.getByCache(it.id)
-            return cityEntities.map { e -> e.toDto() }
-                .filter { c -> cityId == null || c.cityId == cityId };
-        };
-
-        return emptyList();
     }
 
     suspend fun getPrayerTimesForDate(
@@ -123,24 +86,6 @@ class PrayerTimesRepository @Inject constructor(
         dailyPrayerTimesDao.upsertAll(response.prayerTimes.map { it.value.toEntity(year, cityId) })
     }
 
-    private suspend fun refreshCitiesCache() {
-        // Fetch cities list from the API.
-        val response = api.getCities()
-
-        // Cache the fetched prayer times in the database.
-        val fetchedAt = System.currentTimeMillis();
-        val expiresAt = fetchedAt + CITIES_CACHE_DURATION;
-
-        val cacheId = citiesCacheDao.insert(
-            CitiesCacheEntity(
-                fetchedAt = fetchedAt,
-                expiresAt = expiresAt
-            )
-        ).toInt()
-
-        cityDao.upsertAll(response.cities.map { it.toEntity(cacheId) })
-    }
-
     private fun DailyPrayerTimesEntity.toDto(displayDate: String = this.date): DailyPrayerTimes {
         return DailyPrayerTimes(
             date = displayDate,
@@ -168,18 +113,6 @@ class PrayerTimesRepository @Inject constructor(
             asr = asrTime,
             maghrib = maghribTime,
             isha = ishaTime
-        )
-    }
-
-    private fun CityEntity.toDto(): City {
-        return City(cityId = cityId, cityName = cityName)
-    }
-
-    private fun City.toEntity(cacheId: Int): CityEntity {
-        return CityEntity(
-            cityId = cityId,
-            cacheId = cacheId,
-            cityName = cityName
         )
     }
 }

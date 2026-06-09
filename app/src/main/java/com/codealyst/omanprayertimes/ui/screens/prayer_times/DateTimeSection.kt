@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.R
-import com.codealyst.omanprayertimes.features.api.dtos.City
+import com.codealyst.omanprayertimes.features.settings.dtos.City
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.TiledBox
 import java.time.ZonedDateTime
@@ -75,21 +75,19 @@ fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
                     style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
 
-                if (selectedCity != null) {
-                    Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(16.dp))
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_location),
-                        contentDescription = "City"
-                    )
+                Icon(
+                    painter = painterResource(R.drawable.ic_location),
+                    contentDescription = "City"
+                )
 
-                    Spacer(Modifier.width(2.dp))
+                Spacer(Modifier.width(2.dp))
 
-                    Text(
-                        selectedCity.cityName,
-                        style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
+                Text(
+                    selectedCity.cityName,
+                    style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
             }
 
             Spacer(Modifier.height(16.dp))

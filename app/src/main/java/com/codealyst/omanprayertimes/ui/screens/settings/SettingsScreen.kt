@@ -25,7 +25,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.BuildConfig
 import com.codealyst.omanprayertimes.R
-import com.codealyst.omanprayertimes.features.api.dtos.City
+import com.codealyst.omanprayertimes.features.settings.dtos.City
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions

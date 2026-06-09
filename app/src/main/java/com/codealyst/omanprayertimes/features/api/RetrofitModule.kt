@@ -8,6 +8,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+const val API_URL = "https://oman-prayer-times-api.mirzarameezahmedbaig.workers.dev/api/v1/"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
@@ -15,7 +17,7 @@ object RetrofitModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://oman-prayer-times-api.mirzarameezahmedbaig.workers.dev/api/v1/")
+            .baseUrl(API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
