@@ -97,4 +97,3 @@ To build a debug APK:
 - Added: Language Settings
 - Added: Arabic translation
 - Added: In-app updates.
-- 
