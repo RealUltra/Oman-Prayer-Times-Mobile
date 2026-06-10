@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,9 @@ import com.codealyst.omanprayertimes.ui.components.Dropdown
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
 import com.codealyst.omanprayertimes.ui.components.ScreenHeader
 import com.codealyst.omanprayertimes.ui.components.SearchableDropdown
+
+const val PRIVACY_POLICY_URL =
+    "https://realultra.github.io/Oman-Prayer-Times-Mobile/legal/privacy_policy.html"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +53,8 @@ fun SettingsScreen(
 
     val languageLabels = stringArrayResource(R.array.languages)
     val themeLabels = stringArrayResource(R.array.themes)
+
+    val uriHandler = LocalUriHandler.current
 
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
@@ -128,9 +134,22 @@ fun SettingsScreen(
             }
 
             SettingsGroup(title = stringResource(R.string.about)) {
+                SettingsRow(title = "Privacy Policy") {
+                    Text(
+                        "Show",
+                        style = fonts.bodyMedium,
+                        color = colorScheme.primary,
+                        modifier = Modifier.clickable(
+                            enabled = true,
+                            onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) })
+                    )
+                }
+
+                HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
+
                 SettingsRow(title = stringResource(R.string.version)) {
                     Text(
-                        "v${BuildConfig.VERSION_NAME}",
+                        stringResource(R.string.version_name, BuildConfig.VERSION_NAME),
                         style = fonts.bodyMedium,
                         color = colorScheme.onSurfaceVariant
                     )
