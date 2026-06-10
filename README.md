@@ -22,10 +22,6 @@ Ministry of Endowments and Religious Affairs (MERA)'s website.**
     <td><img src="./screenshots/screenshot_3.png" alt="" width="300"></td>
     <td><img src="./screenshots/screenshot_4.png" alt="" width="300"></td>
   </tr>
-  <tr>
-    <td><img src="./screenshots/screenshot_5.png" alt="" width="300"></td>
-    <td><img src="./screenshots/screenshot_6.png" alt="" width="300"></td>
-  </tr>
 </table>
 
 ## API
