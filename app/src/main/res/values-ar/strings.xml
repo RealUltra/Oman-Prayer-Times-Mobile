@@ -23,6 +23,9 @@
     <string name="about">حول التطبيق</string>
     <string name="version">الإصدار</string>
     <string name="version_name">الإصدار %1$s</string>
+    <string name="legal">الشؤون القانونية</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="show">إظهار</string>
 
     <string name="today">اليوم</string>
     <string name="tomorrow">غدًا</string>

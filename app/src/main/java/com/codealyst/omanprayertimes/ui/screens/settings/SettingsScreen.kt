@@ -133,10 +133,10 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsGroup(title = stringResource(R.string.about)) {
-                SettingsRow(title = "Privacy Policy") {
+            SettingsGroup(title = stringResource(R.string.legal)) {
+                SettingsRow(title = stringResource(R.string.privacy_policy)) {
                     Text(
-                        "Show",
+                        stringResource(R.string.show),
                         style = fonts.bodyMedium,
                         color = colorScheme.primary,
                         modifier = Modifier.clickable(
@@ -144,9 +144,9 @@ fun SettingsScreen(
                             onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) })
                     )
                 }
+            }
 
-                HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
-
+            SettingsGroup(title = stringResource(R.string.about)) {
                 SettingsRow(title = stringResource(R.string.version)) {
                     Text(
                         stringResource(R.string.version_name, BuildConfig.VERSION_NAME),

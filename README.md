@@ -83,6 +83,8 @@ To build a debug APK:
 - Add Language, City, Iqamah Times and Reminders setup on startup.
 - Add Android Widgets
 
+## Changelog
+
 ### v26.06.1
 
 - Added: Prayer Times from MERA's website for any date.
@@ -95,7 +97,4 @@ To build a debug APK:
 - Added: Language Settings
 - Added: Arabic translation
 - Added: In-app updates.
-
-## Changelog
-
-*Nothing to see here*
+- 
