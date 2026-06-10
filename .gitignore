@@ -1,6 +1,6 @@
 *.iml
 .gradle
-/assets/
+/experimental_assets/
 /local.properties
 /.idea/caches
 /.idea/libraries

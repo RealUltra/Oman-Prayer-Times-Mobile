@@ -59,6 +59,11 @@ To build a debug APK:
 
 - Added: Auto-detection of cities.
 
+### v26.06.3
+
+- Improve in-app updates.
+- Add In-app reviews.
+
 ### v26.06.2
 
 - Add Custom Reminders

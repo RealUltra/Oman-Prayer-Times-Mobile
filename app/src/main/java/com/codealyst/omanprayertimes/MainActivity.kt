@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
 import com.codealyst.omanprayertimes.ui.screens.main.MainScreen
 import com.codealyst.omanprayertimes.ui.theme.OmanPrayerTimesTheme
+import com.codealyst.omanprayertimes.ui.updates_and_review.InAppUpdateHandler
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
                     else -> isSystemInDarkTheme()
                 }
             ) {
+                InAppUpdateHandler()
                 MainScreen()
             }
         }

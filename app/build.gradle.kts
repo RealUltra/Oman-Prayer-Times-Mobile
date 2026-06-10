@@ -14,15 +14,25 @@ android {
         applicationId = "com.codealyst.omanprayertimes"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1
-        versionName = "26.06.1"
+        versionCode = 2
+        versionName = "26.06.1-update-test-2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            debugSymbolLevel = "FULL"
+        }
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
+
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -80,4 +90,6 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.android.play.app.update)
+    implementation(libs.android.play.app.update.ktx)
 }
