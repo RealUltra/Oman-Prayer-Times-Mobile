@@ -72,18 +72,22 @@ To build a debug APK:
 
 - Added: Auto-detection of cities.
 
-### v26.06.3
+### v26.06.4
 
 - Improve in-app updates.
 - Add In-app reviews.
 
-### v26.06.2
+### v26.06.3
 
 - Add Custom Reminders
 - Add Language, City, Iqamah Times and Reminders setup on startup.
 - Add Android Widgets
 
 ## Changelog
+
+### v26.06.2
+
+- Fixed: DTO minification bug. This was a major bug so a new version was released quickly.
 
 ### v26.06.1
 

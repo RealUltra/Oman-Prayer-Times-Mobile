@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Gson uses these annotations to map minified DTO fields to JSON keys in release builds.
+-keepattributes Signature,*Annotation*
+-keepclassmembers,allowobfuscation class com.codealyst.omanprayertimes.features.api.dtos.** {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
