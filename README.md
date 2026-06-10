@@ -11,6 +11,23 @@
 **An app for viewing daily prayer times in Oman from the
 Ministry of Endowments and Religious Affairs (MERA)'s website.**
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="./screenshots/screenshot_1.png" alt="" width="300"></td>
+    <td><img src="./screenshots/screenshot_2.png" alt="" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/screenshot_3.png" alt="" width="300"></td>
+    <td><img src="./screenshots/screenshot_4.png" alt="" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/screenshot_5.png" alt="" width="300"></td>
+    <td><img src="./screenshots/screenshot_6.png" alt="" width="300"></td>
+  </tr>
+</table>
+
 ## API
 
 **[Ministry of Endowments and Religious Affairs
