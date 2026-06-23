@@ -59,7 +59,7 @@ fun PrayerTimeRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
-                .padding(top = if (!isHeader) 16.dp else 0.dp, bottom = 16.dp),
+                .padding(vertical = if (!isHeader) 16.dp else 0.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -74,7 +74,7 @@ fun PrayerTimeRow(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                color = if (!isHeader) adhanColor else MaterialTheme.colorScheme.onSurface,
+                color = if (!isHeader) adhanColor else colorScheme.onSurface,
             )
 
             Text(
@@ -82,7 +82,7 @@ fun PrayerTimeRow(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                color = if (!isHeader) iqamahColor else MaterialTheme.colorScheme.onSurface,
+                color = if (!isHeader) iqamahColor else colorScheme.onSurface,
             )
         }
     }

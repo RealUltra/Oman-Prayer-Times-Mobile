@@ -13,14 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,6 +25,8 @@ fun NextEventTimer(
     nextEvent: EventInfo? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val fonts = MaterialTheme.typography
+
     val adhanColor = colorScheme.tertiary
     val iqamahColor = colorScheme.primary
 
@@ -55,29 +49,10 @@ fun NextEventTimer(
         }
     }
 
-    val fonts = MaterialTheme.typography;
-
-    val textureBitmap = ImageBitmap.imageResource(id = R.drawable.texture2);
-
     Box(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+            .padding(horizontal = 16.dp)
             .border(1.dp, colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-            .drawBehind {
-                drawRect(
-                    brush = ShaderBrush(
-                        shader = ImageShader(
-                            image = textureBitmap,
-                            tileModeX = TileMode.Repeated,
-                            tileModeY = TileMode.Repeated,
-                        )
-                    ),
-                    colorFilter = ColorFilter.tint(
-                        color = colorScheme.onBackground.copy(alpha = 0.0f),
-                        blendMode = BlendMode.Modulate,
-                    ),
-                )
-            }
     ) {
         Column(
             modifier = Modifier

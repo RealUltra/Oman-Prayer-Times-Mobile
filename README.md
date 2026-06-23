@@ -68,20 +68,22 @@ To build a debug APK:
 
 ## Planned
 
+### v26.08.1
+
+- Add auto-detection of cities.
+
 ### v26.07.1
 
-- Added: Auto-detection of cities.
-
-### v26.06.4
-
+- Add Android Widgets
 - Improve in-app updates.
 - Add In-app reviews.
 
 ### v26.06.3
 
+- Improve prayer screen design.
+- Add settings configuration on startup
+- Add adhan alarm feature
 - Add Custom Reminders
-- Add Language, City, Iqamah Times and Reminders setup on startup.
-- Add Android Widgets
 
 ## Changelog
 

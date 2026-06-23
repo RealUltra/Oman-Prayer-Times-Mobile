@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 fun <T> Dropdown(
     options: List<DropdownOptions<T>>,
     modifier: Modifier = Modifier,
+    width: DropdownWidth = DropdownWidth.LargestOption,
     selectedValue: T? = options.firstOrNull()?.value,
     enabled: Boolean = true,
     placeholder: String = "",
@@ -47,12 +49,14 @@ fun <T> Dropdown(
         )
     }
 
+    val columnModifier =
+        if (width == DropdownWidth.LargestOption) Modifier.width(IntrinsicSize.Max) else Modifier.fillMaxWidth()
+
     Box(
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier
-                .width(IntrinsicSize.Max)
+            modifier = columnModifier
                 .clickable(
                     enabled = enabled && options.isNotEmpty(),
                     onClick = { expanded = true }
@@ -110,4 +114,9 @@ fun <T> Dropdown(
             }
         }
     }
+}
+
+enum class DropdownWidth {
+    LargestOption,
+    Fill
 }
