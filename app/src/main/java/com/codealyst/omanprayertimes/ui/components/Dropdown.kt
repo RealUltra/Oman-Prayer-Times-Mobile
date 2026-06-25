@@ -106,7 +106,6 @@ fun <T> Dropdown(
                         )
                     },
                     onClick = {
-                        selectedOption = option
                         expanded = false
                         onOptionSelected?.invoke(option.value)
                     }

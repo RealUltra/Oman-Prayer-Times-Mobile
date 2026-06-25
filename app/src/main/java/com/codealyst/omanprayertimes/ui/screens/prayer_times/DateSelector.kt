@@ -12,9 +12,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,28 +32,31 @@ import java.time.LocalDate
 @Composable
 fun DateSelector(
     modifier: Modifier = Modifier,
+    today: LocalDate = getOmanDate(),
     onDateSelected: (LocalDate) -> Unit = {}
 ) {
-    val today = remember { getOmanDate() }
-    val tomorrow = remember(today) { today.plusDays(1) }
+    val tomorrow = today.plusDays(1)
 
     var selectedDate by rememberSaveable { mutableStateOf(today) }
+    var selectedOption by rememberSaveable { mutableStateOf(DateSelectorOption.Today) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
-    val selectedOption = when (selectedDate) {
-        today -> {
-            DateSelectorOption.Today
+    // How a change of date is handled
+    LaunchedEffect(today) {
+        // If "Today" is selected, move ahead to the new date.
+        if (selectedOption == DateSelectorOption.Today) {
+            selectedDate = today
         }
-
-        tomorrow -> {
-            DateSelectorOption.Tomorrow
+        // If "Tomorrow" was selected, which has now become today, update the option to today.
+        else if (selectedDate == today) {
+            selectedOption = DateSelectorOption.Today
         }
-
-        else -> {
-            DateSelectorOption.Custom
+        // If a custom date was selected, which has now become tomorrow, select "Tomorrow".
+        else if (selectedDate == tomorrow) {
+            selectedOption = DateSelectorOption.Tomorrow
         }
+        onDateSelected(today)
     }
-
 
     val colorScheme = MaterialTheme.colorScheme
     val fonts = MaterialTheme.typography
@@ -96,9 +99,11 @@ fun DateSelector(
 
                 onOptionSelected = { option ->
                     if (option == DateSelectorOption.Today) {
+                        selectedOption = option
                         selectedDate = today
-                        onDateSelected(selectedDate)
+                        onDateSelected(today)
                     } else if (option == DateSelectorOption.Tomorrow) {
+                        selectedOption = option
                         selectedDate = tomorrow
                         onDateSelected(selectedDate)
                     } else {
@@ -116,6 +121,11 @@ fun DateSelector(
         DatePickerDialog(
             selectedDate = selectedDate,
             onDateSelected = { pickedDate ->
+                selectedOption = when (pickedDate) {
+                    today -> DateSelectorOption.Today
+                    tomorrow -> DateSelectorOption.Tomorrow
+                    else -> DateSelectorOption.Custom
+                }
                 selectedDate = pickedDate
                 onDateSelected(pickedDate)
             },

@@ -74,16 +74,16 @@ To build a debug APK:
 
 ### v26.07.1
 
+- Add Custom Reminders
 - Add Android Widgets
 - Improve in-app updates.
 - Add In-app reviews.
 
 ### v26.06.3
 
-- Improve prayer screen design.
+- Compacted prayer times screen.
 - Add settings configuration on startup
 - Add adhan alarm feature
-- Add Custom Reminders
 
 ## Changelog
 

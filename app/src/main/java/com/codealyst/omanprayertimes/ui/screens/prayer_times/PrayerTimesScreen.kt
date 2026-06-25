@@ -3,7 +3,6 @@ package com.codealyst.omanprayertimes.ui.screens.prayer_times
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +50,7 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
 
     // Whenever the city is changed and at every second, update the next event info.
     val nextEvent: EventInfo? = run {
-        val today = getOmanDate()
+        val today = now.toLocalDate()
         val tomorrow = today.plusDays(1)
 
         val todayPrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(today)
@@ -98,7 +97,10 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         Column(modifier.fillMaxSize()) {
             Spacer(Modifier.weight(0.25f))
 
-            DateSelector(onDateSelected = { date -> tableDate = date.toString() })
+            DateSelector(
+                today = now.toLocalDate(),
+                onDateSelected = { date -> tableDate = date.toString() }
+            )
 
             Spacer(Modifier.height(12.dp))
             Spacer(Modifier.weight(0.25f))
@@ -112,11 +114,10 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
                 tableIqamahTimes,
                 nextEvent ?: EventInfo(),
                 tableDate,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .weight(10f)
+                    .fillMaxSize(),
             )
-
-            Spacer(Modifier.weight(1f))
         }
-
     }
 }
