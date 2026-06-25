@@ -1,8 +1,9 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDate
@@ -31,7 +33,6 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
 
     // Get the prayer times for the selected date.
     val prayerTimesViewModel = hiltViewModel<PrayerTimesViewModel>();
-    val prayerTimesState = prayerTimesViewModel.state.value;
     val tablePrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(LocalDate.parse(tableDate))
 
     // Get app settings
@@ -49,7 +50,7 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
 
     // Whenever the city is changed and at every second, update the next event info.
     val nextEvent: EventInfo? = run {
-        val today = getOmanDate()
+        val today = now.toLocalDate()
         val tomorrow = today.plusDays(1)
 
         val todayPrayerTimes = prayerTimesViewModel.getPrayerTimesForDate(today)
@@ -85,27 +86,38 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
         prayerTimesViewModel.fetchYearlyPrayerTimes(cityId = settings.cityId);
     }
 
-
-
-
     Column(
         modifier = modifier
             .fillMaxSize()
     ) {
         DateTimeSection(now = now)
 
-        NextEventTimer(nextEvent = nextEvent)
+        Spacer(Modifier.height(12.dp))
 
-        PrayerTimesTable(
-            tablePrayerTimes,
-            tableIqamahTimes,
-            nextEvent ?: EventInfo(),
-            tableDate,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-        )
+        Column(modifier.fillMaxSize()) {
+            Spacer(Modifier.weight(0.25f))
 
-        DateSelector(onDateSelected = { date -> tableDate = date.toString() })
+            DateSelector(
+                today = now.toLocalDate(),
+                onDateSelected = { date -> tableDate = date.toString() }
+            )
+
+            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.weight(0.25f))
+
+            NextEventTimer(nextEvent = nextEvent)
+
+            Spacer(Modifier.weight(0.25f))
+
+            PrayerTimesTable(
+                tablePrayerTimes,
+                tableIqamahTimes,
+                nextEvent ?: EventInfo(),
+                tableDate,
+                modifier = Modifier
+                    .weight(10f)
+                    .fillMaxSize(),
+            )
+        }
     }
 }

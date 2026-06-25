@@ -1,10 +1,10 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -63,41 +63,30 @@ fun DateTimeSection(now: ZonedDateTime, modifier: Modifier = Modifier) {
                 .padding(start = 16.dp, end = 16.dp, top = 28.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                timeText,
-                style = fonts.displaySmall.copy(fontWeight = FontWeight.Bold),
-            )
-            Spacer(Modifier.height(8.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
-                    dateText,
-                    style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    timeText,
+                    style = fonts.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 )
 
-                Spacer(Modifier.width(16.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_location),
+                        contentDescription = "City"
+                    )
 
-                Icon(
-                    painter = painterResource(R.drawable.ic_location),
-                    contentDescription = "City"
-                )
+                    Spacer(Modifier.width(2.dp))
 
-                Spacer(Modifier.width(2.dp))
-
-                Text(
-                    selectedCity.cityName,
-                    style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                )
+                    Text(
+                        selectedCity.cityName,
+                        style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
             }
-
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                hijriDateText,
-                style = fonts.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
         }
     }
 }

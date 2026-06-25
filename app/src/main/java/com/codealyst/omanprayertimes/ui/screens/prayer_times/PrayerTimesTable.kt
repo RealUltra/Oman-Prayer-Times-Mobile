@@ -2,6 +2,7 @@ package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -55,19 +56,21 @@ fun PrayerTimesTable(
 
     val colorScheme = MaterialTheme.colorScheme;
 
-    Column(modifier) {
+    Column(modifier.padding(top = 16.dp)) {
         PrayerTimeRow(
             stringResource(R.string.salah),
             stringResource(R.string.adhan),
             stringResource(R.string.iqamah),
             isHeader = true
         )
+
+        Spacer(Modifier.height(16.dp))
         HorizontalDivider(color = colorScheme.outlineVariant, thickness = 2.dp)
         Spacer(Modifier.height(4.dp))
 
         Column(
             modifier = Modifier
-                .padding(bottom = 8.dp)
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             for ((prayerKey, adhanTime, iqamahTime) in prayerRowsInfo) {
@@ -78,7 +81,11 @@ fun PrayerTimesTable(
                     highlighted = (nextEvent.prayerKey == prayerKey && dateMatches),
                     isAdhanNext = nextEvent.isAdhan
                 )
+
+                Spacer(Modifier.weight(1f))
             }
+
+            Spacer(Modifier.weight(3f))
         }
     }
 }
