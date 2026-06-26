@@ -1,9 +1,12 @@
 package com.codealyst.omanprayertimes.ui.screens.prayer_times
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -56,7 +59,11 @@ fun PrayerTimesTable(
 
     val colorScheme = MaterialTheme.colorScheme;
 
-    Column(modifier.padding(top = 16.dp)) {
+    Column(
+        modifier = modifier
+            .padding(top = 16.dp)
+            .fillMaxSize()
+    ) {
         PrayerTimeRow(
             stringResource(R.string.salah),
             stringResource(R.string.adhan),
@@ -68,24 +75,34 @@ fun PrayerTimesTable(
         HorizontalDivider(color = colorScheme.outlineVariant, thickness = 2.dp)
         Spacer(Modifier.height(4.dp))
 
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .weight(1f)
+                .fillMaxWidth()
         ) {
-            for ((prayerKey, adhanTime, iqamahTime) in prayerRowsInfo) {
-                PrayerTimeRow(
-                    stringResource(prayerKey.titleRes()),
-                    adhanTime,
-                    iqamahTime,
-                    highlighted = (nextEvent.prayerKey == prayerKey && dateMatches),
-                    isAdhanNext = nextEvent.isAdhan
-                )
+            Column(
+                modifier = Modifier
+                    .heightIn(min = (maxHeight - 16.dp).coerceAtLeast(0.dp))
+                    .verticalScroll(rememberScrollState())
+            ) {
+                prayerRowsInfo.forEachIndexed { index, row ->
+                    val prayerKey = row.first
+                    val adhanTime = row.second
+                    val iqamahTime = row.third
 
-                Spacer(Modifier.weight(1f))
+                    PrayerTimeRow(
+                        stringResource(prayerKey.titleRes()),
+                        adhanTime,
+                        iqamahTime,
+                        highlighted = (nextEvent.prayerKey == prayerKey && dateMatches),
+                        isAdhanNext = nextEvent.isAdhan
+                    )
+
+                    if (index != prayerRowsInfo.lastIndex) {
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
             }
-
-            Spacer(Modifier.weight(3f))
         }
     }
 }

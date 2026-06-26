@@ -27,6 +27,19 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="show">Show</string>
 
+    <string name="initial_setup_title">Setup</string>
+    <string name="setup_step_progress">Step %1$d of %2$d</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="complete">Complete</string>
+    <string name="language_setup_title">Choose your language</string>
+    <string name="language_setup_description">Pick the language you would like to use in the app.</string>
+    <string name="city_setup_title">Select your city</string>
+    <string name="city_setup_description">Prayer times will be calculated using this city.</string>
+    <string name="theme_setup_title">Choose your theme</string>
+    <string name="theme_setup_description">Use your device theme or choose light or dark mode.</string>
+    <string name="iqamah_setup_title">Set up iqamah times</string>
+
     <string name="prayer_times_for">Prayer Times For</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
@@ -45,6 +58,9 @@
     <string name="next_event_iqamah_label">%1$s Iqamah in</string>
     <string name="next_event_sunrise_label">Shurooq in</string>
     <string name="use_iqamah_times">Use iqamah times</string>
+    <string name="show_iqamah_times">Show iqamah times</string>
+    <string name="iqamah_setup_description">Display local mosque iqamah times alongside adhan times.</string>
+    <string name="configure_iqamah_times">Configure iqamah times</string>
     <string name="minute_abbreviation">min</string>
     <string name="minutes_after_adhan">minutes after adhan</string>
     <string name="exact_hour_placeholder">7</string>

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.codealyst.omanprayertimes.features.database.daos.IqamahConfigDao
 import com.codealyst.omanprayertimes.features.database.entities.IqamahConfigEntity
 import com.codealyst.omanprayertimes.features.prayer_times.PrayerKey
@@ -24,6 +25,7 @@ class SettingsRepository @Inject constructor(
         val CITY_ID = intPreferencesKey("city_id")
         val THEME = stringPreferencesKey("theme")
         val IQAMAH_TIMES_ENABLED = booleanPreferencesKey("iqamah_times_enabled")
+        val COMPLETED_SETUP_STEPS = stringSetPreferencesKey("completed_setup_steps")
         val DEFAULT_IQAMAH_CONFIGS = listOf(
             IqamahConfig(PrayerKey.FAJR, IqamahMode.AFTER_ADHAN, 25, null),
             IqamahConfig(PrayerKey.DHUHR, IqamahMode.AFTER_ADHAN, 20, null),
@@ -35,9 +37,11 @@ class SettingsRepository @Inject constructor(
 
     val settingsFlow: Flow<AppSettings> = dataStore.data.map { prefs ->
         AppSettings(
+            loaded = true,
             cityId = prefs[CITY_ID] ?: 0,
             theme = prefs[THEME] ?: "",
-            iqamahTimesEnabled = prefs[IQAMAH_TIMES_ENABLED] ?: false
+            iqamahTimesEnabled = prefs[IQAMAH_TIMES_ENABLED] ?: false,
+            completedSetupSteps = prefs[COMPLETED_SETUP_STEPS].orEmpty().toList()
         )
     }
 
@@ -60,6 +64,20 @@ class SettingsRepository @Inject constructor(
     suspend fun setIqamahTimesEnabled(iqamahTimesEnabled: Boolean) {
         dataStore.edit { prefs ->
             prefs[IQAMAH_TIMES_ENABLED] = iqamahTimesEnabled
+        }
+    }
+
+    suspend fun addCompletedSetupStep(setupStep: SetupStep) {
+        dataStore.edit { prefs ->
+            val current = prefs[COMPLETED_SETUP_STEPS].orEmpty()
+            prefs[COMPLETED_SETUP_STEPS] = current + setupStep.name
+        }
+    }
+
+    suspend fun addCompletedSetupSteps(setupSteps: List<SetupStep>) {
+        dataStore.edit { prefs ->
+            val current = prefs[COMPLETED_SETUP_STEPS].orEmpty()
+            prefs[COMPLETED_SETUP_STEPS] = current + setupSteps.map { it.name }
         }
     }
 
@@ -109,3 +127,4 @@ class SettingsRepository @Inject constructor(
         else -> PrayerKey.SUNRISE
     }
 }
+

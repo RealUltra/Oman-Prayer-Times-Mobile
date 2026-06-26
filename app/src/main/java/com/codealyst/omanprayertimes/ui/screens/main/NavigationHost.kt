@@ -17,7 +17,7 @@ fun NavigationHost(navController: NavHostController, modifier: Modifier = Modifi
         modifier = modifier
     ) {
         composable(Destination.PRAYER_TIMES.route) {
-            PrayerTimesScreen()
+            PrayerTimesScreen(onConfigureIqamahTimes = { navController.navigate(SettingsRoute.IQAMAH_CONFIGS) })
         }
 
         composable(Destination.SETTINGS.route) {
