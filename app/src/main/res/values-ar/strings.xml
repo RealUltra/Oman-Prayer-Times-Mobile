@@ -22,10 +22,23 @@
     <string name="coming_soon">قريبًا</string>
     <string name="about">حول التطبيق</string>
     <string name="version">الإصدار</string>
-    <string name="version_name">الإصدار %1$s</string>
+    <string name="version_name">v%1$s</string>
     <string name="legal">الشؤون القانونية</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="show">إظهار</string>
+
+    <string name="initial_setup_title">إعداد التطبيق</string>
+    <string name="setup_step_progress">الخطوة %1$d من %2$d</string>
+    <string name="back">رجوع</string>
+    <string name="next">التالي</string>
+    <string name="complete">إتمام</string>
+    <string name="language_setup_title">اختر اللغة</string>
+    <string name="language_setup_description">اختر اللغة التي تريد استخدامها في التطبيق.</string>
+    <string name="city_setup_title">اختر مدينتك</string>
+    <string name="city_setup_description">سيتم حساب أوقات الصلاة بناءً على هذه المدينة.</string>
+    <string name="theme_setup_title">اختر المظهر</string>
+    <string name="theme_setup_description">استخدم مظهر الجهاز أو اختر الوضع الفاتح أو الداكن.</string>
+    <string name="iqamah_setup_title">إعداد أوقات الإقامة</string>
 
     <string name="prayer_times_for">مواقيت الصلاة لـ</string>
     <string name="today">اليوم</string>
@@ -45,6 +58,9 @@
     <string name="next_event_iqamah_label">إقامة %1$s خلال</string>
     <string name="next_event_sunrise_label">الشروق خلال</string>
     <string name="use_iqamah_times">استخدام أوقات الإقامة</string>
+    <string name="show_iqamah_times">عرض أوقات الإقامة</string>
+    <string name="iqamah_setup_description">عرض أوقات إقامة المسجد بجانب أوقات الأذان.</string>
+    <string name="configure_iqamah_times">ضبط أوقات الإقامة</string>
     <string name="minute_abbreviation">د</string>
     <string name="minutes_after_adhan">دقائق بعد الأذان</string>
     <string name="exact_hour_placeholder">٧</string>

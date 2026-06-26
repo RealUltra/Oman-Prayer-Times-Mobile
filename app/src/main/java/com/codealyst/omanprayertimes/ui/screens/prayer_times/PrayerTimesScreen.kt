@@ -3,6 +3,7 @@ package com.codealyst.omanprayertimes.ui.screens.prayer_times
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,15 +21,13 @@ import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDateTime
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTimes
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
-import com.codealyst.omanprayertimes.ui.screens.prayer_times.setup_dialog.SetupDialog
+import com.codealyst.omanprayertimes.ui.screens.prayer_times.initial_setup.InitialSetupDialog
+import com.codealyst.omanprayertimes.ui.screens.prayer_times.initial_setup.getIncompleteSetupSteps
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 @Composable
 fun PrayerTimesScreen(modifier: Modifier = Modifier, onConfigureIqamahTimes: () -> Unit) {
-    // Initial Setup
-    var showSetupDialog by rememberSaveable { mutableStateOf(true) }
-
     // Prepare the current date and time in Oman.
     var now by remember { mutableStateOf(getOmanDateTime()) }
 
@@ -42,6 +41,19 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier, onConfigureIqamahTimes: () 
     // Get app settings
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+
+    // Initial Setup
+    val incompleteSetupSteps = rememberSaveable(settings.completedSetupSteps) {
+        getIncompleteSetupSteps(settings.completedSetupSteps)
+    }
+
+    var showSetupDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(settings.loaded, incompleteSetupSteps) {
+        if (settings.loaded && incompleteSetupSteps.isNotEmpty()) {
+            showSetupDialog = true
+        }
+    }
 
     // Get the iqamah times for the selected date.
     val iqamahConfigs by settingsViewModel.iqamahConfigs.collectAsStateWithLifecycle()
@@ -119,15 +131,19 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier, onConfigureIqamahTimes: () 
                 nextEvent ?: EventInfo(),
                 tableDate,
                 modifier = Modifier
-                    .weight(10f)
-                    .fillMaxSize(),
+                    .fillMaxWidth()
+                    .weight(20f),
             )
         }
     }
 
-    if (showSetupDialog) {
-        SetupDialog(
+    if (showSetupDialog && incompleteSetupSteps.isNotEmpty()) {
+        InitialSetupDialog(
+            incompleteSetupSteps = incompleteSetupSteps,
             onConfigureIqamahTimes = onConfigureIqamahTimes,
-            onDismissRequest = { showSetupDialog = false })
+            onDismissRequest = {
+                settingsViewModel.addCompletedSetupSteps(incompleteSetupSteps)
+                showSetupDialog = false
+            })
     }
 }

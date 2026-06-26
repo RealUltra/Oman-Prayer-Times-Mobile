@@ -1,39 +1,34 @@
-package com.codealyst.omanprayertimes.ui.screens.prayer_times.setup_dialog
+package com.codealyst.omanprayertimes.ui.screens.prayer_times.initial_setup
 
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.core.os.LocaleListCompat
 import com.codealyst.omanprayertimes.R
 import com.codealyst.omanprayertimes.ui.components.Dropdown
+import com.codealyst.omanprayertimes.ui.components.DropdownWidth
 import com.codealyst.omanprayertimes.ui.components.DropdownOptions
 
 @Composable
 fun LanguageStep(modifier: Modifier = Modifier) {
     val languageLabels = stringArrayResource(R.array.languages)
 
-    val fonts = MaterialTheme.typography
-
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        Text(
-            stringResource(R.string.language) + ":",
-            style = fonts.bodyLarge.copy(fontWeight = FontWeight.Bold)
-        )
-
+    SetupStepContent(
+        title = stringResource(R.string.language_setup_title),
+        description = stringResource(R.string.language_setup_description),
+        modifier = modifier
+    ) {
         Dropdown(
             options = listOf(
                 DropdownOptions(languageLabels[0], ""),
                 DropdownOptions(languageLabels[1], "en"),
                 DropdownOptions(languageLabels[2], "ar"),
             ),
+            modifier = Modifier.fillMaxWidth(),
+            width = DropdownWidth.Fill,
             selectedValue = getSelectedLanguageTag(),
             onOptionSelected = { language -> setLanguage(language) },
         )
