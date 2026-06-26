@@ -20,11 +20,15 @@ import com.codealyst.omanprayertimes.features.oman_datetime.getOmanDateTime
 import com.codealyst.omanprayertimes.features.prayer_times.viewmodels.PrayerTimesViewModel
 import com.codealyst.omanprayertimes.features.settings.dtos.getIqamahTimes
 import com.codealyst.omanprayertimes.features.settings.viewmodels.SettingsViewModel
+import com.codealyst.omanprayertimes.ui.screens.prayer_times.setup_dialog.SetupDialog
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 @Composable
-fun PrayerTimesScreen(modifier: Modifier = Modifier) {
+fun PrayerTimesScreen(modifier: Modifier = Modifier, onConfigureIqamahTimes: () -> Unit) {
+    // Initial Setup
+    var showSetupDialog by rememberSaveable { mutableStateOf(true) }
+
     // Prepare the current date and time in Oman.
     var now by remember { mutableStateOf(getOmanDateTime()) }
 
@@ -119,5 +123,11 @@ fun PrayerTimesScreen(modifier: Modifier = Modifier) {
                     .fillMaxSize(),
             )
         }
+    }
+
+    if (showSetupDialog) {
+        SetupDialog(
+            onConfigureIqamahTimes = onConfigureIqamahTimes,
+            onDismissRequest = { showSetupDialog = false })
     }
 }
