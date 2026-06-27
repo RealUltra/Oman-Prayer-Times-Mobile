@@ -14,8 +14,8 @@ android {
         applicationId = "com.codealyst.omanprayertimes"
         minSdk = 23
         targetSdk = 36
-        versionCode = 5
-        versionName = "26.06.2"
+        versionCode = 6
+        versionName = "26.06.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

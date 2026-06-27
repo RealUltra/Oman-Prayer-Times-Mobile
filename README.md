@@ -37,9 +37,13 @@ Ministry of Endowments and Religious Affairs (MERA)'s website.**
   Religious Affairs (MERA)**' website.
 - **Next Event Timer:** View the remaining time until the next adhan or iqamah.
 - **Iqamah Times:** Set the Iqamah Times according to your local mosque.
-- **Reminders:** Set custom reminders for the adhan or iqamah.
 - **86 Cities:** All cities available on MERA's website.
 - **Multiple Languages:** Available in Arabic & English.
+
+## Upcoming Features
+
+- **Reminders:** Set custom reminders for the adhan or iqamah.
+- **Adhan Alarms:** Hear the sound of the adhan for each salah.
 
 ## Tech Stack
 
@@ -74,18 +78,19 @@ To build a debug APK:
 
 ### v26.07.1
 
+- Add Adhan Alarms
 - Add Custom Reminders
+- Show the last event on the event timer for a few minutes.
 - Add Android Widgets
-- Improve in-app updates.
-- Add In-app reviews.
+- Improve in-app updates
+- Add in-app reviews
+
+## Changelog
 
 ### v26.06.3
 
-- Compacted prayer times screen.
-- Add settings configuration on startup
-- Add adhan alarm feature
-
-## Changelog
+- Updated: Prayer times screen.
+- Added: Initial Setup.
 
 ### v26.06.2
 
@@ -103,3 +108,14 @@ To build a debug APK:
 - Added: Language Settings
 - Added: Arabic translation
 - Added: In-app updates.
+
+## License
+
+Copyright 2026 Codealyst.
+
+The Oman Prayer Times source code is licensed under the Apache License 2.0. See
+[LICENSE](LICENSE) for details.
+
+The Oman Prayer Times name, logo, app icon, screenshots, store listing materials, and other
+brand assets are not licensed for reuse without permission. Forks and redistributed builds must
+use different branding and clearly state that they are unofficial.

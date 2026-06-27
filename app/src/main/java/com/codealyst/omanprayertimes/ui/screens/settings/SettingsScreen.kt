@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.integerArrayResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,9 @@ import com.codealyst.omanprayertimes.ui.components.SearchableDropdown
 
 const val PRIVACY_POLICY_URL =
     "https://realultra.github.io/Oman-Prayer-Times-Mobile/legal/privacy_policy.html"
+
+
+const val GITHUB_REPO_URL = "https://github.com/RealUltra/Oman-Prayer-Times-Mobile"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,16 +126,6 @@ fun SettingsScreen(
                         )
                     )
                 }
-
-                HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
-
-                SettingsRow(title = stringResource(R.string.reminders)) {
-                    Text(
-                        stringResource(R.string.coming_soon),
-                        style = fonts.bodyMedium,
-                        color = colorScheme.onSurfaceVariant,
-                    )
-                }
             }
 
             SettingsGroup(title = stringResource(R.string.legal)) {
@@ -152,6 +147,20 @@ fun SettingsScreen(
                         stringResource(R.string.version_name, BuildConfig.VERSION_NAME),
                         style = fonts.bodyMedium,
                         color = colorScheme.onSurfaceVariant
+                    )
+                }
+
+                HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
+
+                SettingsRow(title = "Source Code") {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_link),
+                        contentDescription = "GitHub Repository",
+                        tint = colorScheme.primary,
+                        modifier = Modifier
+                            .clickable(
+                                enabled = true,
+                                onClick = { uriHandler.openUri(GITHUB_REPO_URL) })
                     )
                 }
             }
