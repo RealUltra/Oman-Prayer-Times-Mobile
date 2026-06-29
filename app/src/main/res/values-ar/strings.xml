@@ -18,11 +18,11 @@
     <string name="prayer_setup">إعدادات الصلاة</string>
     <string name="iqamah_times">أوقات الإقامة</string>
     <string name="configure">ضبط</string>
-    <string name="reminders">التذكيرات</string>
-    <string name="coming_soon">قريبًا</string>
     <string name="about">حول التطبيق</string>
     <string name="version">الإصدار</string>
     <string name="version_name">v%1$s</string>
+    <string name="source_code">الكود المصدري</string>
+    <string name="github_repository">مستودع GitHub</string>
     <string name="legal">الشؤون القانونية</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="show">إظهار</string>

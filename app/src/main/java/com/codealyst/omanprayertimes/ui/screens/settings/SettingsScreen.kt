@@ -152,10 +152,10 @@ fun SettingsScreen(
 
                 HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
 
-                SettingsRow(title = "Source Code") {
+                SettingsRow(title = stringResource(R.string.source_code)) {
                     Icon(
                         painter = painterResource(R.drawable.ic_link),
-                        contentDescription = "GitHub Repository",
+                        contentDescription = stringResource(R.string.github_repository),
                         tint = colorScheme.primary,
                         modifier = Modifier
                             .clickable(
