@@ -22,6 +22,10 @@ Ministry of Endowments and Religious Affairs (MERA)'s website.**
     <td><img src="./screenshots/screenshot_3.png" alt="" width="300"></td>
     <td><img src="./screenshots/screenshot_4.png" alt="" width="300"></td>
   </tr>
+  <tr>
+    <td><img src="./screenshots/screenshot_5.png" alt="" width="300"></td>
+    <td><img src="./screenshots/screenshot_6.png" alt="" width="300"></td>
+  </tr>
 </table>
 
 ## API
@@ -78,6 +82,10 @@ To build a debug APK:
 
 ### v26.07.1
 
+- Fixed: "Source Code" not translated to arabic.
+- City dropdown opens when the city label on the prayer times screen is pressed.
+- Fix back button during initial setup.
+- Pressing the prayer times button on the nav bar should not reset the table date.
 - Add Adhan Alarms
 - Add Custom Reminders
 - Show the last event on the event timer for a few minutes.
